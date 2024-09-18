@@ -6,7 +6,7 @@ class PropertyCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Text("Property Card"),
+      child: Text("Property Card 2"),
     );
   }
 }
