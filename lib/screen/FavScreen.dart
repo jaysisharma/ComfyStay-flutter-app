@@ -6,6 +6,7 @@ class Favscreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
+      drawer: Drawer(),
       body: Column(
         children: [
           Text("AAA")
