@@ -1,6 +1,6 @@
-
 import 'package:comfystay/components/CustomButton.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class ConditionsScreen extends StatefulWidget {
   @override
@@ -13,20 +13,66 @@ class _ConditionsScreenState extends State<ConditionsScreen> {
     'No Smoking',
     'No Extra Guest',
     'No Party',
-    'After 8 PM no entry'
+    'After 8 PM no entry',
     'No Smokingss',
     'No Extra Guessst',
     'No Partys',
-    'After 8 PsM no entry''No Smoking',
+    'After 8 PsM no entry',
+    'No Smoking',
     'No Extra Gsuest',
     'No Partsy',
-    'Afters 8 PsM no entry'
-    'ss'
+    'Afters 8 PsM no entry',
+    'ss',
     'After'
   ];
 
   // Keeping track of selected conditions
   Set<String> selectedConditions = Set<String>();
+
+  // Function to show an alert dialog for adding a new condition
+  void _showAddConditionDialog() {
+    TextEditingController conditionController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("Add Condition"),
+              IconButton(
+                onPressed: (){
+                  Navigator.of(context).pop();
+                },
+                icon: Icon(Icons.close))
+            ],
+          ),
+          content: TextField(
+            controller: conditionController,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: "Enter new condition",
+            ),
+          ),
+          actions: [
+            
+           
+            GestureDetector(
+              onTap: (){
+                 if (conditionController.text.isNotEmpty) {
+                  setState(() {
+                    conditions.add(conditionController.text);
+                  });
+                  Navigator.of(context).pop();
+                }
+              },
+              child: CustomButton(text: "Add"))
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,21 +114,23 @@ class _ConditionsScreenState extends State<ConditionsScreen> {
               }).toList(),
             ),
             const SizedBox(height: 20.0),
-            const Wrap(
+            Wrap(
               spacing: 10.0,
               runSpacing: 10.0,
               children: [
-                // Duplicate conditions as per your image layout
-                
                 // Plus icon for adding more conditions
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 20,
                   backgroundColor: Colors.teal,
-                  child: Icon(Icons.add, color: Colors.white),
+                  child: IconButton(
+                    icon: Icon(Icons.add, color: Colors.white),
+                    onPressed: _showAddConditionDialog, // Open alert dialog
+                  ),
                 ),
               ],
             ),
-            const CustomButton(text: "Next")
+            const SizedBox(height: 20.0),
+            const CustomButton(text: "Next"),
           ],
         ),
       ),
