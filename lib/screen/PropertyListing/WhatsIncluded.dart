@@ -1,15 +1,14 @@
 import 'package:comfystay/components/CustomButton.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
-class ConditionsScreen extends StatefulWidget {
+class WharsIncluded extends StatefulWidget {
   @override
-  _ConditionsScreenState createState() => _ConditionsScreenState();
+  _WharsIncludedState createState() => _WharsIncludedState();
 }
 
-class _ConditionsScreenState extends State<ConditionsScreen> {
+class _WharsIncludedState extends State<WharsIncluded> {
   // Example condition list
   final List<String> conditions = [
     'No Smoking',
@@ -78,14 +77,13 @@ class _ConditionsScreenState extends State<ConditionsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // leading: const Icon(Icons.arrow_back),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context); // Navigate back to the previous screen
           },
         ),
-        title: const Text('Conditions'),
+        title: const Text('Whats Included'),
         elevation: 0,
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.black,
@@ -136,9 +134,10 @@ class _ConditionsScreenState extends State<ConditionsScreen> {
               ],
             ),
             const SizedBox(height: 20.0),
+            // const CustomButton(text: "Next"),
             GestureDetector(
                 onTap: () {
-                  Get.toNamed('/requirements');
+                  Get.toNamed('/addphotos');
                 },
                 child: const CustomButton(text: "Next")),
           ],

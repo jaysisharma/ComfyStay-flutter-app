@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
-class ConditionsScreen extends StatefulWidget {
+class InitialRequirement extends StatefulWidget {
   @override
-  _ConditionsScreenState createState() => _ConditionsScreenState();
+  _InitialRequirementState createState() => _InitialRequirementState();
 }
 
-class _ConditionsScreenState extends State<ConditionsScreen> {
+class _InitialRequirementState extends State<InitialRequirement> {
   // Example condition list
   final List<String> conditions = [
     'No Smoking',
@@ -44,10 +44,10 @@ class _ConditionsScreenState extends State<ConditionsScreen> {
             children: [
               Text("Add Condition"),
               IconButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  icon: Icon(Icons.close))
+                onPressed: (){
+                  Navigator.of(context).pop();
+                },
+                icon: Icon(Icons.close))
             ],
           ),
           content: TextField(
@@ -58,16 +58,18 @@ class _ConditionsScreenState extends State<ConditionsScreen> {
             ),
           ),
           actions: [
+            
+           
             GestureDetector(
-                onTap: () {
-                  if (conditionController.text.isNotEmpty) {
-                    setState(() {
-                      conditions.add(conditionController.text);
-                    });
-                    Navigator.of(context).pop();
-                  }
-                },
-                child: CustomButton(text: "Add"))
+              onTap: (){
+                 if (conditionController.text.isNotEmpty) {
+                  setState(() {
+                    conditions.add(conditionController.text);
+                  });
+                  Navigator.of(context).pop();
+                }
+              },
+              child: CustomButton(text: "Add"))
           ],
         );
       },
@@ -78,14 +80,12 @@ class _ConditionsScreenState extends State<ConditionsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // leading: const Icon(Icons.arrow_back),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context); // Navigate back to the previous screen
-          },
-        ),
-        title: const Text('Conditions'),
+leading: IconButton(
+    icon: Icon(Icons.arrow_back),
+    onPressed: () {
+      Navigator.pop(context);  // Navigate back to the previous screen
+    },
+  ),        title: const Text('Inital Requirements'),
         elevation: 0,
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.black,
@@ -137,10 +137,10 @@ class _ConditionsScreenState extends State<ConditionsScreen> {
             ),
             const SizedBox(height: 20.0),
             GestureDetector(
-                onTap: () {
-                  Get.toNamed('/requirements');
-                },
-                child: const CustomButton(text: "Next")),
+               onTap: (){
+                Get.toNamed('/whatsincluded');
+              },
+              child: const CustomButton(text: "Next")),
           ],
         ),
       ),

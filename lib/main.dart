@@ -2,15 +2,18 @@ import 'package:comfystay/screen/HomeScreen.dart';
 import 'package:comfystay/screen/Login.dart';
 import 'package:comfystay/screen/Onboarding.dart';
 import 'package:comfystay/screen/Profile.dart';
+import 'package:comfystay/screen/PropertyListing/AddContact.dart';
+import 'package:comfystay/screen/PropertyListing/AddPhotos.dart';
 import 'package:comfystay/screen/PropertyListing/Conditions.dart';
+import 'package:comfystay/screen/PropertyListing/Inital_Requirement.dart';
 import 'package:comfystay/screen/PropertyListing/PropertyType.dart';
+import 'package:comfystay/screen/PropertyListing/WhatsIncluded.dart';
 import 'package:comfystay/screen/Register.dart';
 import 'package:comfystay/screen/SplashScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 void main() {
-  
   runApp(const MyApp());
 }
 
@@ -38,7 +41,10 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/profile', page: () => const ProfileScreen()),
         GetPage(name: '/property', page: () => const PropertyType()),
         GetPage(name: '/listing', page: () => const PGListing()),
-        GetPage(name: '/conditions', page: () =>  ConditionsScreen()),
+        GetPage(name: '/conditions', page: () => ConditionsScreen()),
+        GetPage(name: '/requirements', page: () => InitialRequirement()),
+        GetPage(name: '/whatsincluded', page: () => WharsIncluded()),
+        GetPage(name: '/addcontact', page: () => AddContact()),
       ],
     );
   }

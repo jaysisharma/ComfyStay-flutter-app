@@ -81,6 +81,12 @@ class PGListing extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+    icon: Icon(Icons.arrow_back),
+    onPressed: () {
+      Navigator.pop(context);  // Navigate back to the previous screen
+    },
+  ),
         title: Text("PG Listing"),
       ),
       body: Column(
