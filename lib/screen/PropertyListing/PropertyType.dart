@@ -82,11 +82,11 @@ class PGListing extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-    icon: Icon(Icons.arrow_back),
-    onPressed: () {
-      Navigator.pop(context);  // Navigate back to the previous screen
-    },
-  ),
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context); // Navigate back to the previous screen
+          },
+        ),
         title: Text("PG Listing"),
       ),
       body: Column(

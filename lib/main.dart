@@ -6,6 +6,7 @@ import 'package:comfystay/screen/PropertyListing/AddContact.dart';
 import 'package:comfystay/screen/PropertyListing/AddPhotos.dart';
 import 'package:comfystay/screen/PropertyListing/Conditions.dart';
 import 'package:comfystay/screen/PropertyListing/Inital_Requirement.dart';
+import 'package:comfystay/screen/PropertyListing/PropertyListing.dart';
 import 'package:comfystay/screen/PropertyListing/PropertyType.dart';
 import 'package:comfystay/screen/PropertyListing/WhatsIncluded.dart';
 import 'package:comfystay/screen/Register.dart';
@@ -44,7 +45,9 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/conditions', page: () => ConditionsScreen()),
         GetPage(name: '/requirements', page: () => InitialRequirement()),
         GetPage(name: '/whatsincluded', page: () => WharsIncluded()),
-        GetPage(name: '/addcontact', page: () => AddContact()),
+        GetPage(name: '/addphotos', page: () => AddPhotosPage()),
+        GetPage(name: '/addContact', page: () => AddContact()),
+        GetPage(name: '/propertylisting', page: () => PropertyListing()),
       ],
     );
   }
