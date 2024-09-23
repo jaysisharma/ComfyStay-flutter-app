@@ -13,7 +13,6 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   bool isDarkMode = false;
   
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,6 +20,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         backgroundColor: const Color.fromARGB(255, 19, 158, 135),
         foregroundColor: Colors.white,
         title: const Text('Profile'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context); // This will navigate back to the previous screen
+          },
+        ),
       ),
       body: Column(
         children: [
