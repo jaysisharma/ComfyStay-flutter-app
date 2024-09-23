@@ -46,7 +46,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 const SizedBox(height: 10),
                 const Text(
-                  'Abhishek Sha',
+                  'Abhishek Sah',
                   style: TextStyle(color: Colors.white, fontSize: 20),
                 ),
               ],
@@ -58,10 +58,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Get.toNamed("/property");
             },
             child: _buildProfileMenu(
-                "List Your Property", Icons.production_quantity_limits_sharp),
+                "Update Profile", Icons.person),
           ),
-          _buildProfileMenu("Your Listings", Icons.my_library_books_sharp),
-          _buildProfileMenu("Update Profile", Icons.person_2),
+          _buildProfileMenu("Add Parent", Icons.people),
+          _buildProfileMenu("Add Teacher", Icons.people),
+          _buildProfileMenu("Change Password", Icons.key),
           _buildProfileMenu("Help & Support", Icons.support_agent_rounded),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 8),
