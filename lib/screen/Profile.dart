@@ -63,9 +63,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Get.toNamed("/property");
             },
             child: _buildProfileMenu(
-                "Update Profile", Icons.person),
+                "List Your Property", Icons.construction),
           ),
-          _buildProfileMenu("Add Parent", Icons.people),
+          _buildProfileMenu("your Listing", Icons.people),
           _buildProfileMenu("Add Teacher", Icons.people),
           _buildProfileMenu("Change Password", Icons.key),
           _buildProfileMenu("Help & Support", Icons.support_agent_rounded),
