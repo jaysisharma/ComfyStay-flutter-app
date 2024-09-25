@@ -12,7 +12,6 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   bool isDarkMode = false;
-  
 
   @override
   Widget build(BuildContext context) {
@@ -54,17 +53,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           const SizedBox(height: 20),
           GestureDetector(
-            onTap: (){
+            onTap: () {
               Get.toNamed("/property");
             },
             child: _buildProfileMenu(
                 "List Your Property", Icons.production_quantity_limits_sharp),
           ),
-          GestureDetector(
-            onTap: (){
-              Get.toNamed("/propertylisting");
-            },
-            child: _buildProfileMenu("Your Listings", Icons.my_library_books_sharp)),
+          _buildProfileMenu("Your Listings", Icons.my_library_books_sharp),
           _buildProfileMenu("Update Profile", Icons.person_2),
           _buildProfileMenu("Help & Support", Icons.support_agent_rounded),
           Padding(

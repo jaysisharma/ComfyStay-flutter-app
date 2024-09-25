@@ -1,3 +1,4 @@
+import 'package:comfystay/screen/Dashboard.dart';
 import 'package:comfystay/screen/HomeScreen.dart';
 import 'package:comfystay/screen/Inbox.dart';
 import 'package:comfystay/screen/Login.dart';
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      initialRoute: '/',
+      initialRoute: '/dashboard',
       getPages: [
         GetPage(name: '/', page: () => const SplashScreen()),
         GetPage(name: '/onboarding', page: () => const OnBoarding()),
@@ -49,8 +50,8 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/addphotos', page: () => AddPhotosPage()),
         GetPage(name: '/addContact', page: () => const AddContact()),
         GetPage(name: '/propertylisting', page: () => const PropertyListing()),
-                GetPage(name: '/inbox', page: () => const Inbox()),
-
+        GetPage(name: '/inbox', page: () => const Inbox()),
+        GetPage(name: '/dashboard', page: () => const Dashboard()),
       ],
     );
   }
