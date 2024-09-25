@@ -8,10 +8,7 @@ class Dashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView
-      (
-        
-        child: _banner(context)),
+      body: SingleChildScrollView(child: _banner(context)),
     );
   }
 
@@ -89,6 +86,9 @@ class Dashboard extends StatelessWidget {
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                     ),
+                    SizedBox(
+                      height: 20,
+                    ),
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
@@ -106,6 +106,9 @@ class Dashboard extends StatelessWidget {
               Text(
                 "Recommended",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+              SizedBox(
+                height: 20,
               ),
               PropertyCard(),
               PropertyCard(),
