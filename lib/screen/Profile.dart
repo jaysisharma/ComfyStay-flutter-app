@@ -9,10 +9,8 @@ class ProfileScreen extends StatefulWidget {
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
-
 class _ProfileScreenState extends State<ProfileScreen> {
   bool isDarkMode = false;
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +57,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           const SizedBox(height: 20),
           GestureDetector(
-            onTap: (){
+            onTap: () {
               Get.toNamed("/property");
             },
             child: _buildProfileMenu(
