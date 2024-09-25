@@ -6,6 +6,7 @@ class PropertyCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      // Choose which code to keep or merge them
       child: Column(
         children: [
           Container(
@@ -13,10 +14,8 @@ class PropertyCard extends StatelessWidget {
             height: 250, // Set container height
             decoration: BoxDecoration(
               image: const DecorationImage(
-                image:
-                    AssetImage("assets/images/roomcard.jpeg"), // Use AssetImage
-                fit: BoxFit
-                    .cover, // Ensures the image covers the entire container
+                image: AssetImage("assets/images/roomcard.jpeg"), // Use AssetImage
+                fit: BoxFit.cover, // Ensures the image covers the entire container
               ),
               borderRadius: BorderRadius.circular(10), // Apply rounded corners
             ),

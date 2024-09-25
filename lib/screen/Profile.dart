@@ -9,7 +9,6 @@ class ProfileScreen extends StatefulWidget {
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
-
 class _ProfileScreenState extends State<ProfileScreen> {
   bool isDarkMode = false;
 
@@ -20,6 +19,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         backgroundColor: const Color.fromARGB(255, 19, 158, 135),
         foregroundColor: Colors.white,
         title: const Text('Profile'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Get.offAllNamed("/HomeScreen.dart"); // Navigate back to the home page and clear the navigation stack
+          },
+        ),
       ),
       body: Column(
         children: [
@@ -41,11 +46,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   radius: 40,
                   backgroundColor: const Color.fromRGBO(90, 205, 184, 1),
                   child: Image.asset(
-                      'images/profile.png'), // Ensure the asset path is correct
+                      'assets/images/profile.png'), // Ensure the asset path is correct
                 ),
                 const SizedBox(height: 10),
                 const Text(
-                  'Abhishek Sha',
+                  'Abhishek Sah',
                   style: TextStyle(color: Colors.white, fontSize: 20),
                 ),
               ],
@@ -57,10 +62,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Get.toNamed("/property");
             },
             child: _buildProfileMenu(
-                "List Your Property", Icons.production_quantity_limits_sharp),
+                "List Your Property", Icons.construction),
           ),
-          _buildProfileMenu("Your Listings", Icons.my_library_books_sharp),
-          _buildProfileMenu("Update Profile", Icons.person_2),
+          _buildProfileMenu("your Listing", Icons.people),
+          _buildProfileMenu("Add Teacher", Icons.people),
+          _buildProfileMenu("Change Password", Icons.key),
           _buildProfileMenu("Help & Support", Icons.support_agent_rounded),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 8),
