@@ -1,5 +1,6 @@
 import 'package:comfystay/components/PropertyCard.dart';
 import 'package:comfystay/components/PropertyCard2.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Dashboard extends StatelessWidget {

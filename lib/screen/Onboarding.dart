@@ -1,5 +1,4 @@
 import 'package:comfystay/components/PageRouteBuilder.dart';
-import 'package:comfystay/screen/HomeScreen.dart';
 import 'package:comfystay/screen/Register.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
