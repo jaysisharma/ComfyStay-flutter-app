@@ -17,7 +17,11 @@ class RegisterScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.asset('images/logo.png', width: 140,height: 140,),
+            Image.asset(
+              'images/logo.png',
+              width: 140,
+              height: 140,
+            ),
             const Row(
               children: [
                 Text(
@@ -60,8 +64,13 @@ class RegisterScreen extends StatelessWidget {
               icon: Icons.key,
               hint: 'Password',
             ),
-            const CustomButton(
-              text: "Sign Up",
+            GestureDetector(
+              onTap: () {
+                Get.toNamed("/profile");
+              },
+              child: const CustomButton(
+                text: "Sign Up",
+              ),
             ),
             const Row(
               children: [
@@ -104,7 +113,9 @@ class RegisterScreen extends StatelessWidget {
                 )
               ],
             ),
-            SizedBox(height: 40,),
+            SizedBox(
+              height: 40,
+            ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -114,7 +125,7 @@ class RegisterScreen extends StatelessWidget {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     Get.toNamed("/login");
                   },
                   child: Text(

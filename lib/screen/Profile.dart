@@ -21,7 +21,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Get.offAllNamed("/HomeScreen.dart"); // Navigate back to the home page and clear the navigation stack
+            Get.offAllNamed("/dashboard"); // Navigate back to the home page and clear the navigation stack
           },
         ),
       ),
