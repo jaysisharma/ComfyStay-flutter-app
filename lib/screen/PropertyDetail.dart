@@ -7,7 +7,9 @@ class PropertyDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Text("ss"),
+      body: Column(children: [
+        Text("Ss")
+      ],),
     );
   }
 }
