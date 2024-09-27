@@ -2,6 +2,8 @@ import 'package:comfystay/components/PropertyCard.dart';
 import 'package:comfystay/components/PropertyCard2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
 
 class Dashboard extends StatelessWidget {
   const Dashboard({super.key});
@@ -111,7 +113,11 @@ class Dashboard extends StatelessWidget {
               SizedBox(
                 height: 20,
               ),
-              PropertyCard(),
+              GestureDetector(
+                onTap: (){
+                  Get.toNamed('/propertydetail');
+                },
+                child: PropertyCard()),
               PropertyCard(),
               PropertyCard(),
               PropertyCard(),

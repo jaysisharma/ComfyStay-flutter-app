@@ -4,6 +4,7 @@ import 'package:comfystay/screen/Inbox.dart';
 import 'package:comfystay/screen/Login.dart';
 import 'package:comfystay/screen/Onboarding.dart';
 import 'package:comfystay/screen/Profile.dart';
+import 'package:comfystay/screen/PropertyDetail.dart';
 import 'package:comfystay/screen/PropertyListing/AddContact.dart';
 import 'package:comfystay/screen/PropertyListing/AddPhotos.dart';
 import 'package:comfystay/screen/PropertyListing/Conditions.dart';
@@ -52,6 +53,8 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/propertylisting', page: () => const PropertyListing()),
         GetPage(name: '/inbox', page: () => const Inbox()),
         GetPage(name: '/dashboard', page: () => const Dashboard()),
+                GetPage(name: '/propertydetail', page: () => const PropertyDetailScreen()),
+
       ],
     );
   }
