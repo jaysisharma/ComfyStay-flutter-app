@@ -27,6 +27,7 @@ class AddContact extends StatelessWidget {
         child: Column(
           children: [
             CustomTextField(
+               // label: "Contact No", icon: Icons.call, hint: "7294792827"),
                 label: "Contact No", icon: Icons.call, hint: "7294792827"),
             GestureDetector(
                 onTap: () {
