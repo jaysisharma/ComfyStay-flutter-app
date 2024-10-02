@@ -5,6 +5,11 @@ class PropertyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Define colors based on the current theme
+    Color titleColor = Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black;
+    Color subtitleColor = Colors.grey[500]!; // Keeping a constant color for the subtitle
+    Color priceColor = Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black;
+
     return Container(
       // Choose which code to keep or merge them
       child: Column(
@@ -31,11 +36,12 @@ class PropertyCard extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(left: 8.0),
-                      child: const Text(
+                      child: Text(
                         "Rama's PG",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
+                          color: titleColor, // Dynamic title text color
                         ),
                       ),
                     ),
@@ -43,48 +49,57 @@ class PropertyCard extends StatelessWidget {
                       height: 40,
                       width: 40,
                       decoration: BoxDecoration(
-                          color: Color.fromRGBO(20, 133, 115, 1),
-                          borderRadius: BorderRadius.circular(9)),
+                        color: Color.fromRGBO(20, 133, 115, 1),
+                        borderRadius: BorderRadius.circular(9),
+                      ),
                       alignment: Alignment.center,
-                      child: Text(
+                      child: const Text(
                         "PG",
                         style: TextStyle(color: Colors.white),
                       ),
-                    )
+                    ),
                   ],
                 ),
-                SizedBox(height: 4,),
+                const SizedBox(height: 4),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.location_pin, color: Colors.grey[500]),
+                        Icon(Icons.location_pin, color: subtitleColor),
+                        const SizedBox(width: 4),
                         Text(
                           "Shantinagar, Kathmandu",
-                          style: TextStyle(color: Colors.grey[500]),
-                        )
+                          style: TextStyle(
+                            color: titleColor, // Dynamic location text color
+                          ),
+                        ),
                       ],
                     ),
                     Row(
                       children: [
-                        Icon(
-                          Icons.star,
-                          color: Colors.amber,
-                        ),
-                        SizedBox(width: 4,),
+                        const Icon(Icons.star, color: Colors.amber),
+                        const SizedBox(width: 4),
                         Text(
                           "4.5",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        )
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: titleColor, // Dynamic rating text color
+                          ),
+                        ),
                       ],
-                    )
+                    ),
                   ],
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("RS 8000/month"),
-                )
+                  child: Text(
+                    "RS 8000/month",
+                    style: TextStyle(
+                      color: priceColor, // Dynamic price text color
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

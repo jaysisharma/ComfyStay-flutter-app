@@ -8,14 +8,14 @@ class PropertyDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(Icons.arrow_back_ios),
+        leading: const Icon(Icons.arrow_back_ios),
       ),
       body: Column(
         children: [
           Container(
             height: 400,
             width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage(
                     "assets/images/roomcard.jpeg"), // Replace with your image path
@@ -23,8 +23,8 @@ class PropertyDetailScreen extends StatelessWidget {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 18),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 18.0, vertical: 18),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

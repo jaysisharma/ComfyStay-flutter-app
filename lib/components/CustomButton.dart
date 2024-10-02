@@ -11,21 +11,27 @@ class CustomButton extends StatelessWidget {
       child: Container(
         alignment: Alignment.center,
         height: 45,
-        width: MediaQuery.of(context).size.width,
+        width: double.infinity, // Full width
         decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor,
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2), // Shadow color
-                spreadRadius: 2, // How much the shadow spreads
-                blurRadius: 5, // How blurry the shadow is
-                offset: Offset(0, 3), // Position of the shadow
-              ),
-            ]),
+          color: Theme.of(context).primaryColor, // Adapt to theme's primary color
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.black.withOpacity(0.5)  // Darker shadow for dark mode
+                  : Colors.black.withOpacity(0.2),  // Lighter shadow for light mode
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: const Offset(0, 3), // Consistent shadow direction
+            ),
+          ],
+        ),
         child: Text(
           text,
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+          style: Theme.of(context).textTheme.button?.copyWith(
+                color: Colors.white,  // Override to white text for contrast
+                fontWeight: FontWeight.w500,
+              ), // Adapt to theme's button text style
         ),
       ),
     );

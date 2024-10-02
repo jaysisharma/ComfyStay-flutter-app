@@ -1,5 +1,5 @@
 import 'package:comfystay/components/PageRouteBuilder.dart';
-import 'package:comfystay/screen/Register.dart';
+import 'package:comfystay/screen/auth/Register.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
