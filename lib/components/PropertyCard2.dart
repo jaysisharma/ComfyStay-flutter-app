@@ -13,7 +13,7 @@ class PropertyCard2 extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(right: 18.0),
       child: Container(
-        width: MediaQuery.of(context).size.width / 1.5, // Set container width
+        width: MediaQuery.of(context).size.width / 1.4, // Set container width
         child: Column(
           children: [
             Container(

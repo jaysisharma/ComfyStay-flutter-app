@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       title: 'ComfyStay',
       theme: lightTheme,        // Light theme configuration
       darkTheme: darkTheme,     // Dark theme configuration
-      themeMode: ThemeMode.system,  // Automatically switch based on the system theme
+      themeMode: ThemeMode.light,  // Automatically switch based on the system theme
       initialRoute: '/',        // Set the initial route
       getPages: AppRoutes.routes,   // Route definitions
     );

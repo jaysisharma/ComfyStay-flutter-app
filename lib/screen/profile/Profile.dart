@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:comfystay/utils/custom_icons.dart'; // Import your custom icons
 
@@ -14,18 +16,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).brightness == Brightness.dark
-          ? Colors.grey[900]  // Dark background
+          ? Colors.grey[900] // Dark background
           : Colors.grey[100], // Light background
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.white,
         title: const Text('Profile'),
-        leading: IconButton(
-          icon: Icon(CustomIcons.backArrow, color: Colors.white), // Back arrow icon
-          onPressed: () {
-            Get.offAllNamed("/dashboard");
-          },
-        ),
       ),
       body: Column(
         children: [
@@ -69,36 +65,62 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onTap: () {
               Get.toNamed("/property");
             },
-            child: _buildProfileMenu("List Your Property", CustomIcons.construction),
+            child: _buildProfileMenu(
+                "List Your Property", CustomIcons.construction),
           ),
-          _buildProfileMenu("Your Listing", CustomIcons.list),
-          _buildProfileMenu("Add Teacher", CustomIcons.addTeacher),
-          _buildProfileMenu("Change Password", CustomIcons.changePassword),
+          GestureDetector(
+              onTap: () {
+                Get.toNamed("/propertylisting");
+              },
+              child: _buildProfileMenu("Your Listing", CustomIcons.list)),
+          GestureDetector(
+            onTap: () {
+                Get.toNamed("/change");
+              },
+            child: _buildProfileMenu("Change Password", CustomIcons.changePassword)),
           _buildProfileMenu("Help & Support", CustomIcons.helpSupport),
 
           // Dark mode switch
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
                   children: [
-                    Icon(CustomIcons.darkMode, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black), // Dark mode icon
+                    Icon(CustomIcons.darkMode,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black), // Dark mode icon
                     const SizedBox(width: 20),
-                    Text("Dark Mode", style: TextStyle(fontSize: 20, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black)),
+                    Text("Dark Mode",
+                        style: TextStyle(
+                            fontSize: 20,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black)),
                   ],
                 ),
                 Switch(
                   value: Theme.of(context).brightness == Brightness.dark,
                   onChanged: (bool value) {
-                    Get.changeThemeMode(value ? ThemeMode.dark : ThemeMode.light);
+                    Get.changeThemeMode(
+                        value ? ThemeMode.dark : ThemeMode.light);
                   },
                 ),
               ],
             ),
           ),
-          _buildProfileMenu("Logout", CustomIcons.logout),
+          Padding(
+ padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 0),            child: Divider(height: 8, color: Colors.grey[400]),
+          ),
+
+          GestureDetector(
+              onTap: () {
+                Get.toNamed("/login");
+              },
+              child: _buildProfileMenu("Logout", CustomIcons.logout)),
         ],
       ),
     );
@@ -115,7 +137,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               Row(
                 children: [
-                  Icon(icon, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black), // Icon color based on theme
+                  Icon(icon,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black), // Icon color based on theme
                   const SizedBox(width: 20),
                   Text(
                     name,
@@ -128,7 +153,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ],
               ),
-              Icon(CustomIcons.arrowForward, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black), // Arrow icon
+              Icon(CustomIcons.arrowForward,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black), // Arrow icon
             ],
           ),
           const SizedBox(height: 8),

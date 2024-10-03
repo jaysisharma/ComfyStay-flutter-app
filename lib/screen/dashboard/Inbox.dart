@@ -9,11 +9,27 @@ class Inbox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Inbox"),
-      ),
       body: Column(
-        children: [_messageCard(), _messageCard(), _messageCard()],
+        children: [
+          SizedBox(height: 40,),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Row(
+              children: [
+                Text(
+                  "Inbox",
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          _messageCard(),
+          _messageCard(),
+          _messageCard()
+        ],
       ),
     );
   }
@@ -23,8 +39,9 @@ class Inbox extends StatelessWidget {
       padding: const EdgeInsets.all(8.0), // Added padding for spacing
       child: Column(
         children: [
+          
           GestureDetector(
-            onTap: (){
+            onTap: () {
               Get.toNamed('/messagepage');
             },
             child: Row(
@@ -56,19 +73,22 @@ class Inbox extends StatelessWidget {
                   ),
                 ),
                 // SizedBox(height: 10),
-                Row(
-                  children: [
-                    Container(
-                      alignment: Alignment.center,
-                      height: 30,
-                      width: 30,
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.all(Radius.circular(100)),
-                      ),
-                      child: Text("1", style: TextStyle(color: Colors.white),),
+                Row(children: [
+                  Container(
+                    alignment: Alignment.center,
+                    height: 30,
+                    width: 30,
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.all(Radius.circular(100)),
                     ),
-                    SizedBox(width: 5),])
+                    child: Text(
+                      "1",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  SizedBox(width: 5),
+                ])
               ],
             ),
           ),

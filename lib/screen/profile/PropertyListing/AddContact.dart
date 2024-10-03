@@ -31,7 +31,7 @@ class AddContact extends StatelessWidget {
                 label: "Contact No", icon: Icons.call, hint: "7294792827"),
             GestureDetector(
                 onTap: () {
-                  Get.toNamed("/profile");
+                  Get.offAllNamed("/home");
                 },
                 child: CustomButton(text: "Submit"))
           ],

@@ -8,6 +8,8 @@ import 'package:comfystay/screen/dashboard/HomeScreen.dart';
 import 'package:comfystay/screen/dashboard/Inbox.dart';
 import 'package:comfystay/screen/dashboard/Message_Page.dart';
 import 'package:comfystay/screen/dashboard/PropertyDetail.dart';
+import 'package:comfystay/screen/dashboard/SearchResult.dart';
+import 'package:comfystay/screen/profile/ChangePassword.dart';
 import 'package:comfystay/screen/profile/Profile.dart';
 import 'package:comfystay/screen/profile/PropertyListing/AddContact.dart';
 import 'package:comfystay/screen/profile/PropertyListing/AddPhotos.dart';
@@ -25,6 +27,7 @@ class AppRoutes {
     GetPage(name: '/register', page: () => const RegisterScreen()),
     GetPage(name: '/login', page: () => const LoginScreen()),
     GetPage(name: '/home', page: () => HomeScreen()),
+    GetPage(name: '/search', page: () => SearchScreen()),
     GetPage(name: '/profile', page: () => const ProfileScreen()),
     GetPage(name: '/property', page: () => const PropertyType()),
     GetPage(name: '/listing', page: () => const PGListing()),
@@ -35,6 +38,7 @@ class AppRoutes {
     GetPage(name: '/addContact', page: () => const AddContact()),
     GetPage(name: '/propertylisting', page: () => const PropertyListing()),
     GetPage(name: '/inbox', page: () => const Inbox()),
+    GetPage(name: '/change', page: () => const changePassword()),
     GetPage(name: '/dashboard', page: () => const Dashboard()),
     GetPage(name: '/messagepage', page: () => const MessagePage()),
     GetPage(name: '/propertydetail', page: () => const PropertyDetailScreen()),

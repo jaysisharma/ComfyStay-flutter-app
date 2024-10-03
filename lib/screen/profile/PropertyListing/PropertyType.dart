@@ -56,7 +56,7 @@ class PropertyType extends StatelessWidget {
         child: Row(
           children: [
             Image.asset(
-              "images/${image}",
+              "assets/images/${image}",
               height: 50,
             ),
             SizedBox(width: 20), // Add space between image and text
@@ -81,13 +81,14 @@ class PGListing extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context); // Navigate back to the previous screen
           },
         ),
-        title: Text("PG Listing"),
+        title: Text("PG Listing"  ),
       ),
       body: Column(
         children: [

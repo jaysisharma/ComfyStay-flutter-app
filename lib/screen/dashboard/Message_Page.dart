@@ -32,6 +32,7 @@ class _MessagePageState extends State<MessagePage> {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 234, 234, 234),
       appBar: AppBar(
+        foregroundColor: Colors.white,
         title: Row(
           children: [
             CircleAvatar(
@@ -39,12 +40,12 @@ class _MessagePageState extends State<MessagePage> {
               backgroundImage: AssetImage("assets/images/roomcard.jpeg"),
             ),
             SizedBox(width: 20),
-            Text('Message Page'),
+            Text('Message Page', style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal),),
           ],
         ),
         actions: [
-          IconButton(icon: Icon(Icons.call), onPressed: () {}),
-          IconButton(icon: Icon(Icons.videocam), onPressed: () {}),
+          IconButton(icon: Icon(Icons.call, color: Colors.white,), onPressed: () {}),
+          IconButton(icon: Icon(Icons.videocam, color: Colors.white,), onPressed: () {}),
         ],
       ),
       body: Column(

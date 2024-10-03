@@ -49,7 +49,7 @@ class OnBoarding extends StatelessWidget {
               const SizedBox(
                 height: 140,
               ),
-              Center(child: Image.asset('images/yellow.png')),
+              Center(child: Image.asset('assets/images/yellow.png')),
               const SizedBox(
                 height: 20,
               ),
@@ -127,7 +127,7 @@ class OnBoarding2 extends StatelessWidget {
               const SizedBox(
                 height: 140,
               ),
-              Center(child: Image.asset('images/blue.png')),
+              Center(child: Image.asset('assets/images/blue.png')),
               const SizedBox(
                 height: 20,
               ),

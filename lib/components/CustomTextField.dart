@@ -34,7 +34,7 @@ class CustomTextField extends StatelessWidget {
             ),
             child: TextField(
               decoration: InputDecoration(
-                prefixIcon: Icon(icon),
+                prefixIcon: Icon(icon,color: Colors.black,),
                 border: InputBorder.none, // Removes the default border
                 contentPadding: EdgeInsets.all(16.0),
                 hintText: hint,

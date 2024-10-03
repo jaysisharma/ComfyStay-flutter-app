@@ -88,59 +88,61 @@ class _WharsIncludedState extends State<WharsIncluded> {
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.black,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Wrap(
-              spacing: 10.0,
-              runSpacing: 10.0,
-              children: conditions.map((condition) {
-                final isSelected = selectedConditions.contains(condition);
-                return ChoiceChip(
-                  label: Text(condition),
-                  selected: isSelected,
-                  onSelected: (selected) {
-                    setState(() {
-                      if (selected) {
-                        selectedConditions.add(condition);
-                      } else {
-                        selectedConditions.remove(condition);
-                      }
-                    });
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Wrap(
+                spacing: 10.0,
+                runSpacing: 10.0,
+                children: conditions.map((condition) {
+                  final isSelected = selectedConditions.contains(condition);
+                  return ChoiceChip(
+                    label: Text(condition),
+                    selected: isSelected,
+                    onSelected: (selected) {
+                      setState(() {
+                        if (selected) {
+                          selectedConditions.add(condition);
+                        } else {
+                          selectedConditions.remove(condition);
+                        }
+                      });
+                    },
+                    selectedColor: Colors.teal,
+                    labelStyle: TextStyle(
+                      color: isSelected ? Colors.white : Colors.black,
+                    ),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 20.0),
+              Wrap(
+                spacing: 10.0,
+                runSpacing: 10.0,
+                children: [
+                  // Plus icon for adding more conditions
+                  CircleAvatar(
+                    radius: 20,
+                    backgroundColor: Colors.teal,
+                    child: IconButton(
+                      icon: Icon(Icons.add, color: Colors.white),
+                      onPressed: _showAddConditionDialog, // Open alert dialog
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20.0),
+              // const CustomButton(text: "Next"),
+              GestureDetector(
+                  onTap: () {
+                    Get.toNamed('/addphotos');
                   },
-                  selectedColor: Colors.teal,
-                  labelStyle: TextStyle(
-                    color: isSelected ? Colors.white : Colors.black,
-                  ),
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 20.0),
-            Wrap(
-              spacing: 10.0,
-              runSpacing: 10.0,
-              children: [
-                // Plus icon for adding more conditions
-                CircleAvatar(
-                  radius: 20,
-                  backgroundColor: Colors.teal,
-                  child: IconButton(
-                    icon: Icon(Icons.add, color: Colors.white),
-                    onPressed: _showAddConditionDialog, // Open alert dialog
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20.0),
-            // const CustomButton(text: "Next"),
-            GestureDetector(
-                onTap: () {
-                  Get.toNamed('/addphotos');
-                },
-                child: const CustomButton(text: "Next")),
-          ],
+                  child: const CustomButton(text: "Next")),
+            ],
+          ),
         ),
       ),
     );
