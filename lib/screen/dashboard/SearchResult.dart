@@ -1,33 +1,49 @@
 import 'package:comfystay/components/PropertyCard.dart';
 import 'package:flutter/material.dart';
+import '../../models/resource.dart';
+import '../../services/resource_service.dart';
+// Assuming PropertyCard is in the same directory
 
-class SearchScreen extends StatelessWidget {
-  const SearchScreen({super.key});
+class PropertyList extends StatefulWidget {
+  @override
+  _PropertyListState createState() => _PropertyListState();
+}
+
+class _PropertyListState extends State<PropertyList> {
+  late Future<List<Resource>> futureResources;
+
+  @override
+  void initState() {
+    super.initState();
+    futureResources = ResourceService().fetchResources();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // drawer: Drawer(),
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        title:  Text(
-                    "Search Result",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
+        title: Text('Property Listings'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(14.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              
-              PropertyCard(),
-              PropertyCard(),
-              PropertyCard(),
-              PropertyCard()
-            ],
-          ),
-        ),
+      body: FutureBuilder<List<Resource>>(
+        future: futureResources,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No properties found.'));
+          } else {
+            List<Resource> resources = snapshot.data!;
+            return ListView.builder(
+              itemCount: resources.length,
+              itemBuilder: (context, index) {
+                final resource = resources[index];
+                return PropertyCard(resource: resource); // Pass the resource
+              },
+            );
+          }
+        },
       ),
     );
   }

@@ -1,24 +1,43 @@
+import 'dart:async'; // Import this to use Timer
+import 'package:comfystay/screen/dashboard/LoadingPropertyCard.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:comfystay/components/PropertyCard.dart';
 import 'package:comfystay/components/PropertyCard2.dart';
 
-class Dashboard extends StatelessWidget {
+class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
+
+  @override
+  _DashboardState createState() => _DashboardState();
+}
+
+class _DashboardState extends State<Dashboard> {
+  bool isLoading = true; // Initial loading state
+
+  @override
+  void initState() {
+    super.initState();
+    // Set a timer to change loading state after 3 seconds
+    Timer(const Duration(seconds: 3), () {
+      setState(() {
+        isLoading = false; // Change loading state
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).brightness == Brightness.dark
-          ? Colors.black // Dark background for dark mode
-          : Colors.white, // Light background for light mode
+          ? Colors.black
+          : Colors.white,
       body: SingleChildScrollView(
-        child: _banner(context),
+        child: _banner(context, isLoading),
       ),
     );
   }
 
-  Widget _banner(BuildContext context) {
+  Widget _banner(BuildContext context, bool isLoading) {
     final double width = MediaQuery.of(context).size.width;
 
     return Column(
@@ -28,8 +47,7 @@ class Dashboard extends StatelessWidget {
           width: width,
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage(
-                  "assets/images/banner.png"), // Replace with your image path
+              image: AssetImage("assets/images/banner.png"),
               fit: BoxFit.cover,
             ),
           ),
@@ -52,17 +70,17 @@ class Dashboard extends StatelessWidget {
           ),
         ),
         Container(
-          width: width * 0.6, // Reduced width to 60% of the screen width
+          width: width * 0.6,
           height: 50,
           decoration: BoxDecoration(
             color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.grey[850] // Darker shade for better contrast
+                ? Colors.grey[850]
                 : Colors.white,
             borderRadius: BorderRadius.circular(28),
           ),
           child: Center(
             child: TextField(
-              readOnly: true, // Make the text field uneditable and trigger onTap
+              readOnly: true,
               onTap: () {
                 _showSearchDialog(context);
               },
@@ -92,52 +110,44 @@ class Dashboard extends StatelessWidget {
             ),
           ),
         ),
-        // Rest of your widget layout remains the same...
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(28),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Featured",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white // Keep white for dark theme
-                            : Colors.black, // Keep black for light theme
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          PropertyCard2(),
-                          PropertyCard2(),
-                          PropertyCard2(),
-                          PropertyCard2(),
-                        ],
-                      ),
-                    ),
-                  ],
+              Text(
+                "Featured",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black,
                 ),
               ),
+              const SizedBox(height: 20),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: isLoading
+                      ? List.generate(4, (index) => const LoadingPropertyCard())
+                      : [
+                          const PropertyCard2(),
+                          const PropertyCard2(),
+                          const PropertyCard2(),
+                          const PropertyCard2(),
+                        ],
+                ),
+              ),
+              const SizedBox(height: 20),
               Text(
                 "Recommended",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
                   color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.white // Keep white for dark theme
-                      : Colors.black, // Keep black for light theme
+                      ? Colors.white
+                      : Colors.black,
                 ),
               ),
               const SizedBox(height: 20),
@@ -145,12 +155,8 @@ class Dashboard extends StatelessWidget {
                 onTap: () {
                   Get.toNamed('/propertydetail');
                 },
-                child: PropertyCard(),
+                child: Text("ss"),
               ),
-              PropertyCard(),
-              PropertyCard(),
-              PropertyCard(),
-              PropertyCard(),
             ],
           ),
         ),
@@ -159,7 +165,7 @@ class Dashboard extends StatelessWidget {
   }
 
   void _showSearchDialog(BuildContext context) {
-    String? selectedPropertyType = "Room"; // Default selected value for dropdown
+    String? selectedPropertyType = "Room";
 
     showDialog(
       context: context,
@@ -206,14 +212,13 @@ class Dashboard extends StatelessWidget {
             TextButton(
               child: const Text('Cancel'),
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
               },
             ),
             ElevatedButton(
               child: const Text('Search'),
               onPressed: () {
-                // Handle search logic here
-                Get.toNamed('/search'); // Close the dialog
+                Get.toNamed('/search');
               },
             ),
           ],

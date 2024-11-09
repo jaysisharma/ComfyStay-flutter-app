@@ -142,12 +142,9 @@ class OnBoarding2 extends StatelessWidget {
               Align(
                   alignment: Alignment.bottomRight,
                   child: GestureDetector(
-                      onTap: () => {
-                            Navigator.push(
-                              context,
-                              CustomPageRoute(page: const RegisterScreen()),
-                            ),
-                          },
+                      onTap: (){
+                        Get.toNamed('/register');
+                      },
                       child: _button()))
             ],
           ),

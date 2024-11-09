@@ -1,38 +1,38 @@
 import 'package:comfystay/components/CustomButton.dart';
+import 'package:comfystay/controllers/DataController.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
-class WharsIncluded extends StatefulWidget {
+class WhatsIncluded extends StatefulWidget {
   @override
-  _WharsIncludedState createState() => _WharsIncludedState();
+  _WhatsIncludedState createState() => _WhatsIncludedState();
 }
 
-class _WharsIncludedState extends State<WharsIncluded> {
-  // Example condition list
-  final List<String> conditions = [
-    'No Smoking',
-    'No Extra Guest',
-    'No Party',
-    'After 8 PM no entry',
-    'No Smokingss',
-    'No Extra Guessst',
-    'No Partys',
-    'After 8 PsM no entry',
-    'No Smoking',
-    'No Extra Gsuest',
-    'No Partsy',
-    'Afters 8 PsM no entry',
-    'ss',
-    'After'
+class _WhatsIncludedState extends State<WhatsIncluded> {
+  final DataController dataController =
+      Get.find(); // Accessing the DataController
+
+  // List of items included in the property
+  final List<String> includedItems = [
+    'Wi-Fi Access',
+    'Free Parking',
+    'Swimming Pool',
+    'Gym Access',
+    'Air Conditioning',
+    '24/7 Security',
+    'Washer and Dryer',
+    'Fully Furnished',
+    'Cable TV',
+    'Cleaning Service',
   ];
 
-  // Keeping track of selected conditions
-  Set<String> selectedConditions = Set<String>();
+  // Keeping track of selected included items
+  Set<String> selectedItems = Set<String>();
 
-  // Function to show an alert dialog for adding a new condition
-  void _showAddConditionDialog() {
-    TextEditingController conditionController = TextEditingController();
+  // Function to show an alert dialog for adding a new item
+  void _showAddItemDialog() {
+    TextEditingController itemController = TextEditingController();
 
     showDialog(
       context: context,
@@ -41,32 +41,34 @@ class _WharsIncludedState extends State<WharsIncluded> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Add Condition"),
+              Text("Add Item"),
               IconButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  icon: Icon(Icons.close))
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                icon: Icon(Icons.close),
+              ),
             ],
           ),
           content: TextField(
-            controller: conditionController,
+            controller: itemController,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
-              hintText: "Enter new condition",
+              hintText: "Enter new item",
             ),
           ),
           actions: [
             GestureDetector(
-                onTap: () {
-                  if (conditionController.text.isNotEmpty) {
-                    setState(() {
-                      conditions.add(conditionController.text);
-                    });
-                    Navigator.of(context).pop();
-                  }
-                },
-                child: CustomButton(text: "Add"))
+              onTap: () {
+                if (itemController.text.isNotEmpty) {
+                  setState(() {
+                    includedItems.add(itemController.text);
+                  });
+                  Navigator.of(context).pop();
+                }
+              },
+              child: CustomButton(text: "Add"),
+            ),
           ],
         );
       },
@@ -83,7 +85,7 @@ class _WharsIncludedState extends State<WharsIncluded> {
             Navigator.pop(context); // Navigate back to the previous screen
           },
         ),
-        title: const Text('Whats Included'),
+        title: const Text('What\'s Included'),
         elevation: 0,
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.black,
@@ -97,17 +99,18 @@ class _WharsIncludedState extends State<WharsIncluded> {
               Wrap(
                 spacing: 10.0,
                 runSpacing: 10.0,
-                children: conditions.map((condition) {
-                  final isSelected = selectedConditions.contains(condition);
+                children: includedItems.map((item) {
+                  final isSelected =
+                      dataController.selectedWhatsIncluded.contains(item);
                   return ChoiceChip(
-                    label: Text(condition),
+                    label: Text(item),
                     selected: isSelected,
                     onSelected: (selected) {
                       setState(() {
                         if (selected) {
-                          selectedConditions.add(condition);
+                          dataController.addWhatsIncluded(item);
                         } else {
-                          selectedConditions.remove(condition);
+                          dataController.selectedWhatsIncluded.remove(item);
                         }
                       });
                     },
@@ -123,24 +126,25 @@ class _WharsIncludedState extends State<WharsIncluded> {
                 spacing: 10.0,
                 runSpacing: 10.0,
                 children: [
-                  // Plus icon for adding more conditions
+                  // Plus icon for adding more items
                   CircleAvatar(
                     radius: 20,
                     backgroundColor: Colors.teal,
                     child: IconButton(
                       icon: Icon(Icons.add, color: Colors.white),
-                      onPressed: _showAddConditionDialog, // Open alert dialog
+                      onPressed: _showAddItemDialog, // Open alert dialog
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 20.0),
-              // const CustomButton(text: "Next"),
+              // Next button to proceed
               GestureDetector(
-                  onTap: () {
-                    Get.toNamed('/addphotos');
-                  },
-                  child: const CustomButton(text: "Next")),
+                onTap: () {
+                  Get.toNamed('/addphotos'); // Navigate to the next page
+                },
+                child: const CustomButton(text: "Next"),
+              ),
             ],
           ),
         ),

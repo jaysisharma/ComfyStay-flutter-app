@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:comfystay/controllers/DataController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -9,11 +10,11 @@ class AddPhotosPage extends StatefulWidget {
 }
 
 class _AddPhotosPageState extends State<AddPhotosPage> {
-  List<File> _photos = [];
-
+  final List<File> _photos = []; // Store photos selected by user
+  final DataController dataController = Get.find();
   final ImagePicker _picker = ImagePicker();
 
-  // Method to pick an image
+  // Method to pick an image from the gallery
   Future<void> _pickImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
@@ -42,19 +43,19 @@ class _AddPhotosPageState extends State<AddPhotosPage> {
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            // Photo grid
+            // Photo grid to display selected images
             Expanded(
               child: GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,  // 3 photos in each row
+                  crossAxisCount: 3,  // 3 photos per row
                   mainAxisSpacing: 10.0,
                   crossAxisSpacing: 10.0,
-                  childAspectRatio: 1.0,  // Adjust based on photo aspect ratio
+                  childAspectRatio: 1.0,
                 ),
-                itemCount: _photos.length + 1,  // Add one for the "add" button
+                itemCount: _photos.length + 1,  // Extra count for "Add" button
                 itemBuilder: (context, index) {
                   if (index < _photos.length) {
-                    // Display picked photos
+                    // Display each picked photo
                     return ClipRRect(
                       borderRadius: BorderRadius.circular(10.0),
                       child: Image.file(
@@ -63,17 +64,15 @@ class _AddPhotosPageState extends State<AddPhotosPage> {
                       ),
                     );
                   } else {
-                    // "Add" button
+                    // "Add" button for picking new images
                     return GestureDetector(
-                      onTap: () {
-                        _pickImage();  // Pick an image from the gallery
-                      },
+                      onTap: _pickImage,
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10.0),
                           color: Colors.grey.shade300,
                         ),
-                        child: Center(
+                        child: const Center(
                           child: Icon(
                             Icons.add,
                             size: 40.0,
@@ -87,11 +86,12 @@ class _AddPhotosPageState extends State<AddPhotosPage> {
               ),
             ),
             const SizedBox(height: 20.0),
-            // Next button
+            // "Next" button to navigate to AddContact page
             GestureDetector(
               onTap: () {
-                // Handle "Next" button action
-                Get.toNamed('/addContact');  // Navigate to the next page
+                // Optionally pass photos to the next screen via dataController
+                dataController.addPhotos(_photos); // Store photos in controller
+                Get.toNamed('/addContact');
               },
               child: Container(
                 width: double.infinity,
@@ -100,7 +100,7 @@ class _AddPhotosPageState extends State<AddPhotosPage> {
                   borderRadius: BorderRadius.circular(8.0),
                   color: Colors.teal,
                 ),
-                child: Center(
+                child: const Center(
                   child: Text(
                     'Next',
                     style: TextStyle(

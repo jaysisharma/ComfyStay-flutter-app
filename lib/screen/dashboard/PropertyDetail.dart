@@ -1,23 +1,17 @@
 import 'package:comfystay/components/CustomButton.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
+import '../../models/resource.dart';
+
 class PropertyDetailScreen extends StatelessWidget {
-  const PropertyDetailScreen({super.key});
+  final Resource resource; // Accept resource as a parameter
+
+  const PropertyDetailScreen({Key? key, required this.resource})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // List of amenities (Image and Text)
-    final List<Map<String, String>> amenities = [
-      {"image": "assets/images/room.png", "name": "Wi-Fi"},
-      {"image": "assets/images/villa.png", "name": "Swimming Pool"},
-      {"image": "assets/images/room.png", "name": "Parking"},
-      {"image": "assets/images/villa.png", "name": "Gym"},
-      {"image": "assets/images/room.png", "name": "Air Conditioning"},
-      {"image": "assets/images/villa.png", "name": "Laundry"},
-    ];
-
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -28,10 +22,12 @@ class PropertyDetailScreen extends StatelessWidget {
                 Container(
                   height: 400,
                   width: MediaQuery.of(context).size.width,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage(
-                          "assets/images/roomcard.jpeg"), // Replace with your image path
+                      image: NetworkImage(
+                          resource.photos != null && resource.photos!.isNotEmpty
+                              ? resource.photos![0]
+                              : 'assets/images/roomcard.jpeg'),
                       fit: BoxFit.cover,
                       opacity: .9,
                     ),
@@ -65,16 +61,17 @@ class PropertyDetailScreen extends StatelessWidget {
                 ),
               ],
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(horizontal: 18.0, vertical: 18),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Displaying the price dynamically
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Rs 15,000/month",
+                        "Rs ${resource.pricePerMonth}/month",
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
@@ -83,13 +80,19 @@ class PropertyDetailScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 15),
                   Text(
-                    "Royal Villa",
+                    resource.name,
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 15),
                   Text(
-                    "A villa with a swimming pool and a premium feel, offering ultimate luxury and comfort.",
+                    "${resource.description}",
                     style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  SizedBox(height: 15),
+                  // Displaying the address dynamically
+                  Text(
+                    "${resource.address.street}, ${resource.address.city}",
+                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
                   ),
                   SizedBox(height: 20),
                   Text(
@@ -100,43 +103,37 @@ class PropertyDetailScreen extends StatelessWidget {
                 ],
               ),
             ),
-            _buildAmenitiesGrid(amenities),
-            SizedBox(
-              height: 20,
+            _buildAmenitiesGrid(resource.amenities), // Use amenities from resource
+            SizedBox(height: 20),
+            _buildConditions(resource.conditions),
+            SizedBox(height: 20),
+            _whatsIncluded(resource.whatsIncluded),
+            SizedBox(height: 20),
+            __buildContact(resource.contactNumber),
+            SizedBox(height: 20),
+            GestureDetector(
+              onTap: () {
+                Get.toNamed('/messagepage');
+              },
+              child: CustomButton(text: 'Contact Now'),
             ),
-            _buildConditions(),
-            SizedBox(
-              height: 20,
-            ),
-            _whatsIncluded(),
-            SizedBox(
-              height: 20,
-            ),
-          __buildContact(),
-          SizedBox(height: 20,),
-          GestureDetector(
-            onTap: (){
-              Get.toNamed('/messagepage');
-            },
-            child: CustomButton(text: 'Contact Now'))
           ],
         ),
       ),
     );
   }
 
-  Widget _buildAmenitiesGrid(List<Map<String, String>> amenities) {
+  Widget _buildAmenitiesGrid(List<String> amenities) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 18.0),
       child: GridView.builder(
-        shrinkWrap: true, // Important to make GridView work inside a ScrollView
-        physics:
-            const NeverScrollableScrollPhysics(), // Disable scrolling inside GridView
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3, // 3 columns
+          crossAxisCount: 3,
           crossAxisSpacing: 10,
           mainAxisSpacing: 20,
-          childAspectRatio: 0.8, // Adjust to control image/text ratio
+          childAspectRatio: 0.8,
         ),
         itemCount: amenities.length,
         itemBuilder: (context, index) {
@@ -149,7 +146,7 @@ class PropertyDetailScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                     image: DecorationImage(
                       image: AssetImage(
-                          amenity['image']!), // Fetch image from the list
+                          "assets/images/${amenity.toLowerCase().replaceAll(' ', '_')}.png"), // Assuming image names match amenity names
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -157,7 +154,7 @@ class PropertyDetailScreen extends StatelessWidget {
               ),
               const SizedBox(height: 5),
               Text(
-                amenity['name']!, // Fetch name from the list
+                amenity,
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 14,
@@ -171,7 +168,7 @@ class PropertyDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildConditions() {
+  Widget _buildConditions(List<String> conditions) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -180,74 +177,59 @@ class PropertyDetailScreen extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
         SizedBox(height: 10),
-        Text(
-          "1. No smoking allowed in the villa.",
-          style: TextStyle(fontWeight: FontWeight.w500),
-        ),
-        SizedBox(height: 5),
-        Text(
-          "2. No pets allowed in the villa.",
-          style: TextStyle(fontWeight: FontWeight.w500),
-        ),
-        SizedBox(height: 5),
-        Text(
-          "3. No alcohol or drugs allowed in the villa.",
-          style: TextStyle(fontWeight: FontWeight.w500),
-        ),
-        SizedBox(height: 5),
-        Text(
-          "4. No children under 18 allowed in the villa.",
-        )
+        for (var condition in conditions)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                condition,
+                style: TextStyle(fontWeight: FontWeight.w500),
+              ),
+              SizedBox(height: 5),
+            ],
+          ),
       ]),
     );
   }
 
-  Widget _whatsIncluded() {
+  Widget _whatsIncluded(List<String> whatsIncluded) {
     return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(
-            "What's Included",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(
+          "What's Included",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+        ),
+        SizedBox(height: 10),
+        for (var item in whatsIncluded)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                item,
+                style: TextStyle(fontWeight: FontWeight.w500),
+              ),
+              SizedBox(height: 5),
+            ],
           ),
-          SizedBox(height: 10),
-          Text(
-            "1. 2 bedrooms, 2 bathrooms, and 1 living room.",
-            style: TextStyle(fontWeight: FontWeight.w500),
-          ),
-          SizedBox(height: 5),
-          Text(
-            "2. Private balcony with views of the village.",
-            style: TextStyle(fontWeight: FontWeight.w500),
-          ),
-          SizedBox(height: 5),
-          Text(
-            "3. Private swimming pool with in-ground pool.",
-            style: TextStyle(fontWeight: FontWeight.w500),
-          ),
-        ]));
+      ]),
+    );
   }
-  Widget __buildContact(){
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(
-        "Contact Us",
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-      ),
-      SizedBox(height: 10),
-      Text(
-        "Phone: +91 1234567890",
-        style: TextStyle(fontWeight: FontWeight.w500),
-      ),
-      SizedBox(height: 5),
-      Text(
-        "Email:  contact@example.com",
-        style: TextStyle(fontWeight: FontWeight.w500),
-      ),
-    ]));
-  
-}
 
-
+  Widget __buildContact(String contactNumber) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(
+          "Contact Us",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+        ),
+        SizedBox(height: 10),
+        Text(
+          "Phone: $contactNumber",
+          style: TextStyle(fontWeight: FontWeight.w500),
+        ),
+      ]),
+    );
+  }
 }

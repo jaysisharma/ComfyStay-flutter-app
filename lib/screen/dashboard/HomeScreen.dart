@@ -41,7 +41,7 @@ class HomeScreen extends StatelessWidget {
           index: bottomNavController.currentIndex.value,
           children: const [
             Dashboard(),
-            Favscreen(),
+            Inbox(),
             Inbox(),
             ProfileScreen(),
           ],

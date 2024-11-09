@@ -1,12 +1,82 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:comfystay/components/CustomButton.dart';
 import 'package:comfystay/components/CustomTextField.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
+
+  @override
+  _RegisterScreenState createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final _fullNameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  bool _isPasswordVisible = false;
+  bool _isLoading = false;
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  @override
+  void dispose() {
+    _fullNameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _register() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      await _auth.createUserWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+
+      // Store the user state in Shared Preferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
+
+      // After successful registration
+      Get.snackbar("Success", "Account created successfully!",
+          backgroundColor: Colors.green, colorText: Colors.white);
+
+      Get.toNamed('/home'); // Navigate to the home page
+    } on FirebaseAuthException catch (e) {
+      setState(() => _isLoading = false);
+
+      // Handle errors from Firebase
+      String errorMessage;
+      switch (e.code) {
+        case 'email-already-in-use':
+          errorMessage = 'This email is already in use.';
+          break;
+        case 'invalid-email':
+          errorMessage = 'The email address is invalid.';
+          break;
+        case 'weak-password':
+          errorMessage = 'The password is too weak.';
+          break;
+        default:
+          errorMessage = 'An unknown error occurred.';
+      }
+
+      Get.snackbar("Registration Failed", errorMessage,
+          backgroundColor: Colors.red, colorText: Colors.white);
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,125 +85,177 @@ class RegisterScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Image.asset(
-                'assets/images/logo.png',
-                width: 140,
-                height: 70,
-              ),
-              const Row(
-                children: [
-                  Text(
-                    "Let's Do It ",
-                    style: TextStyle(fontSize: 40, fontWeight: FontWeight.w600),
-                  ),
-                  Text(
-                    "Quickly ",
-                    style: TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.w600,
-                        color: Color.fromRGBO(20, 133, 115, 1)),
-                  ),
-                ],
-              ),
-              const Text(
-                "SIGN UP NOW",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-              ),
-             
-              const CustomTextField(
-                label: "Full Name",
-                icon: Icons.person,
-                hint: 'Adam Anderson',
-              ),
-              const CustomTextField(
-                label: "Email",
-                icon: Icons.email,
-                hint: 'adam@gmail.com',
-              ),
-              const CustomTextField(
-                label: "Passsword",
-                icon: Icons.key,
-                hint: 'Password',
-              ),
-              const CustomTextField(
-                label: "Confirm Password",
-                icon: Icons.key,
-                hint: 'Password',
-              ),
-              GestureDetector(
-                onTap: () {
-                  Get.toNamed("/home");
-                },
-                child: const CustomButton(
-                  text: "Sign Up",
-                ),
-              ),
-              const Row(
-                children: [
-                  Expanded(
-                    child: Divider(
-                      color: Colors.grey, // Color of the line
-                      thickness: 1, // Thickness of the line
-                      indent: 20, // Indent from the start
-                      endIndent: 20,
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Image.asset('assets/images/logo.png', width: 140, height: 70),
+                const Row(
+                  children: [
+                    Text(
+                      "Let's Do It ",
+                      style:
+                          TextStyle(fontSize: 40, fontWeight: FontWeight.w600),
                     ),
-                  ),
-                  Text(
-                    "OR",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Expanded(
-                    child: Divider(
-                      color: Colors.grey, // Color of the line
-                      thickness: 1, // Thickness of the line
-                      indent: 20, // Indent from the start
-                      endIndent: 20,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-               Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                 Image.asset('assets/images/google.png'),
-                  Icon(
-                    Icons.facebook,
-                    color: Colors.blue,
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    "Already have an account? ",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Get.toNamed("/login");
-                    },
-                    child: Text(
-                      "Sign In",
+                    Text(
+                      "Quickly ",
                       style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontWeight: FontWeight.bold),
+                          fontSize: 40,
+                          fontWeight: FontWeight.w600,
+                          color: Color.fromRGBO(20, 133, 115, 1)),
                     ),
+                  ],
+                ),
+                const Text(
+                  "SIGN UP NOW",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                ),
+                CustomTextField(
+                  label: "Full Name",
+                  icon: Icons.person,
+                  hint: 'Adam Anderson',
+                  controller: _fullNameController,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Full Name is required';
+                    }
+                    return null;
+                  },
+                ),
+                CustomTextField(
+                  label: "Email",
+                  icon: Icons.email,
+                  hint: 'adam@gmail.com',
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Email is required';
+                    }
+                    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+                    if (!emailRegex.hasMatch(value)) {
+                      return 'Enter a valid email';
+                    }
+                    return null;
+                  },
+                ),
+                CustomTextField(
+                  label: "Password",
+                  icon: Icons.lock,
+                  hint: 'Password',
+                  isPassword: true,
+                  controller: _passwordController,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Password is required';
+                    }
+                    if (value.length < 8) {
+                      return 'Password must be at least 8 characters';
+                    }
+                    return null;
+                  },
+                ),
+                CustomTextField(
+                  label: "Confirm Password",
+                  icon: Icons.lock,
+                  hint: 'Confirm Password',
+                  isPassword: true,
+                  controller: _confirmPasswordController,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Please confirm your password';
+                    }
+                    if (value != _passwordController.text) {
+                      return 'Passwords do not match';
+                    }
+                    return null;
+                  },
+                ),
+                GestureDetector(
+                  onTap: _isLoading ? null : _register,
+                  child: Container(
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.symmetric(vertical: 20),
+                    child: _isLoading
+                        ? const CircularProgressIndicator()
+                        : const CustomButton(
+                            text: "Sign Up",
+                          ),
                   ),
-                ],
-              )
-            ],
+                ),
+                const Row(
+                  children: [
+                    Expanded(
+                      child: Divider(
+                        color: Colors.grey,
+                        thickness: 1,
+                        indent: 20,
+                        endIndent: 20,
+                      ),
+                    ),
+                    Text(
+                      "OR",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Expanded(
+                      child: Divider(
+                        color: Colors.grey,
+                        thickness: 1,
+                        indent: 20,
+                        endIndent: 20,
+                      ),
+                    ),
+                  ],
+                ),
+                // const SizedBox(height: 5),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        // Add Google sign-in logic here
+                      },
+                      child:
+                          Image.asset('assets/images/google.png', height: 50),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        // Add Facebook sign-in logic here
+                      },
+                      child: const Icon(
+                        Icons.facebook,
+                        color: Colors.blue,
+                        size: 50,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Already have an account? ",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Get.toNamed("/login");
+                      },
+                      child: Text(
+                        "Sign In",
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),

@@ -1,9 +1,9 @@
-import 'package:comfystay/components/CustomButton.dart';
-import 'package:comfystay/components/ListingField.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+
+import '../../../components/CustomButton.dart';
+import '../../../components/ListingField.dart';
+import '../../../controllers/DataController.dart';
 
 class PropertyType extends StatelessWidget {
   const PropertyType({super.key});
@@ -14,8 +14,7 @@ class PropertyType extends StatelessWidget {
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
         backgroundColor: Colors.grey[200],
-        title:
-            Text('Choose Property Type', style: TextStyle(color: Colors.black)),
+        title: Text('Choose Property Type', style: TextStyle(color: Colors.black)),
         iconTheme: IconThemeData(color: Colors.black),
         elevation: 0, // Remove default AppBar shadow
       ),
@@ -24,19 +23,30 @@ class PropertyType extends StatelessWidget {
         child: Column(
           children: [
             GestureDetector(
-                onTap: () {
-                  Get.toNamed("/listing");
-                },
-                child: _buildtype("PG", "pg.png")),
-            _buildtype("Room", "room.png"),
-            _buildtype("Villa", "villa.png"),
+              onTap: () {
+                _setPropertyTypeAndNavigate("PG");
+              },
+              child: _buildType("PG", "pg.png"),
+            ),
+            GestureDetector(
+              onTap: () {
+                _setPropertyTypeAndNavigate("Room");
+              },
+              child: _buildType("Room", "room.png"),
+            ),
+            GestureDetector(
+              onTap: () {
+                _setPropertyTypeAndNavigate("Villa");
+              },
+              child: _buildType("Villa", "villa.png"),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildtype(String type, String image) {
+  Widget _buildType(String type, String image) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -56,7 +66,7 @@ class PropertyType extends StatelessWidget {
         child: Row(
           children: [
             Image.asset(
-              "assets/images/${image}",
+              "assets/images/$image",
               height: 50,
             ),
             SizedBox(width: 20), // Add space between image and text
@@ -72,13 +82,45 @@ class PropertyType extends StatelessWidget {
       ),
     );
   }
+
+  void _setPropertyTypeAndNavigate(String type) {
+    final DataController dataController = Get.find();
+    dataController.setPropertyType(type); // Save the selected property type in the controller
+    Get.toNamed("/listing", arguments: type); // Pass the type as an argument
+  }
 }
 
-class PGListing extends StatelessWidget {
-  const PGListing({super.key});
+class ListingPage extends StatelessWidget {
+  const ListingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final String propertyType = Get.arguments ?? "PG"; // Get the property type passed from PropertyType screen
+
+    // Controllers to capture the input text
+    final TextEditingController nameController = TextEditingController();
+    final TextEditingController descriptionController = TextEditingController();
+    final TextEditingController priceController = TextEditingController();
+
+    // Validation function
+    void validateAndNavigate() {
+      if (nameController.text.isEmpty || descriptionController.text.isEmpty || priceController.text.isEmpty) {
+        // Show error message if any text field is empty
+        Get.snackbar('Error', 'Please fill in all fields.');
+      } else {
+        // Store the data in the controller
+        final DataController dataController = Get.find();
+        dataController.setListingData(
+          nameController.text,
+          descriptionController.text,
+          priceController.text,
+        );
+
+        // Navigate to the next screen
+        Get.toNamed("/conditions");
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -88,28 +130,33 @@ class PGListing extends StatelessWidget {
             Navigator.pop(context); // Navigate back to the previous screen
           },
         ),
-        title: Text("PG Listing"  ),
+        title: Text("$propertyType Listing"),
       ),
-      body: Column(
-        children: [
-          ListingTextField(
-            text: "PG Name",
-          ),
-          ListingTextField(
-            text: "PG Description",
-          ),
-          ListingTextField(
-            text: "PG Price/Month",
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18.0),
-            child: GestureDetector(
-                onTap: () {
-                  Get.toNamed("/conditions");
-                },
-                child: CustomButton(text: "Next")),
-          )
-        ],
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            ListingTextField(
+              text: "$propertyType Name",
+              controller: nameController, // Pass controller here
+            ),
+            ListingTextField(
+              text: "$propertyType Description",
+              controller: descriptionController, // Pass controller here
+            ),
+            ListingTextField(
+              text: "$propertyType Price/Month",
+              controller: priceController, // Pass controller here
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 18.0),
+              child: GestureDetector(
+                onTap: validateAndNavigate, // Call the validation function on tap
+                child: CustomButton(text: "Next"),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
