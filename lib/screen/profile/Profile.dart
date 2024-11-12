@@ -38,7 +38,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             .doc(_user!.uid)
             .get();
         setState(() {
-          _profileImageUrl = userDoc['profileImage'] ?? ''; // Fetch the profile image URL
+          _profileImageUrl =
+              userDoc['profileImage'] ?? ''; // Fetch the profile image URL
           _email = _user!.email ?? ''; // Fetch the user's email
         });
       } catch (e) {
@@ -117,7 +118,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           // Profile header
           GestureDetector(
-            onTap: _changeProfileImage, // Allow tapping the icon to change the profile image
+            onTap:
+                _changeProfileImage, // Allow tapping the icon to change the profile image
             child: Container(
               height: 250,
               width: double.infinity,
@@ -133,28 +135,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Stack(
-                    alignment: Alignment.bottomRight, // Align the edit icon to the bottom right
+                    alignment: Alignment
+                        .bottomRight, // Align the edit icon to the bottom right
                     children: [
                       CircleAvatar(
                         radius: 40,
-                        backgroundColor: Theme.of(context).colorScheme.secondary,
+                        backgroundColor:
+                            Theme.of(context).colorScheme.secondary,
                         backgroundImage: _profileImageUrl.isNotEmpty
-                            ? NetworkImage(_profileImageUrl) // Display the new profile image
-                            : const AssetImage('assets/images/profile.png') as ImageProvider<Object>,
+                            ? NetworkImage(
+                                _profileImageUrl) // Display the new profile image
+                            : const AssetImage('assets/images/profile.png')
+                                as ImageProvider<Object>,
                       ),
                       GestureDetector(
-                        onTap: _changeProfileImage, // Allow tapping the icon to change the profile image
+                        onTap:
+                            _changeProfileImage, // Allow tapping the icon to change the profile image
                         child: Container(
-                          padding: const EdgeInsets.all(6), // Padding around the icon
+                          padding: const EdgeInsets.all(
+                              6), // Padding around the icon
                           decoration: BoxDecoration(
-                            color: Colors.white, // Background color for the icon
-                            borderRadius: BorderRadius.circular(50), // Circular background
+                            color:
+                                Colors.white, // Background color for the icon
+                            borderRadius: BorderRadius.circular(
+                                50), // Circular background
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.grey.withOpacity(0.5),
                                 spreadRadius: 1,
                                 blurRadius: 5,
-                                offset: const Offset(0, 3), // Changes position of shadow
+                                offset: const Offset(
+                                    0, 3), // Changes position of shadow
                               ),
                             ],
                           ),
@@ -169,13 +180,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    _user?.email ?? 'User Name', // Display user name, fallback to a default name
+                    _user?.email ??
+                        'User Name', // Display user name, fallback to a default name
                     style: const TextStyle(fontSize: 20),
                   ),
                   const SizedBox(height: 5),
                   Text(
                     _email, // Display user email
-                    style: const TextStyle(fontSize: 16, color: Colors.grey), // Style the email text
+                    style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey), // Style the email text
                   ),
                 ],
               ),
@@ -188,11 +202,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onTap: () {
               Get.toNamed("/property");
             },
-            child: _buildProfileMenu("List Your Property", CustomIcons.construction),
+            child: _buildProfileMenu(
+                "List Your Property", CustomIcons.construction),
           ),
           GestureDetector(
             onTap: () {
-              Get.toNamed("/propertylisting");
+              Get.toNamed("/yourlisting");
             },
             child: _buildProfileMenu("Your Listing", CustomIcons.list),
           ),
@@ -200,7 +215,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onTap: () {
               Get.toNamed("/change");
             },
-            child: _buildProfileMenu("Change Password", CustomIcons.changePassword),
+            child: _buildProfileMenu(
+                "Change Password", CustomIcons.changePassword),
           ),
           _buildProfileMenu("Help & Support", CustomIcons.helpSupport),
 
@@ -220,15 +236,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Text("Dark Mode",
                         style: TextStyle(
                             fontSize: 20,
-                            color: Theme.of(context).brightness == Brightness.dark
-                                ? Colors.white
-                                : Colors.black)),
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black)),
                   ],
                 ),
                 Switch(
                   value: Theme.of(context).brightness == Brightness.dark,
                   onChanged: (bool value) {
-                    Get.changeThemeMode(value ? ThemeMode.dark : ThemeMode.light);
+                    Get.changeThemeMode(
+                        value ? ThemeMode.dark : ThemeMode.light);
                   },
                 ),
               ],

@@ -1,4 +1,5 @@
 import 'package:comfystay/controllers/DataController.dart';
+import 'package:comfystay/controllers/favorite_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:comfystay/utils/theme.dart'; // Import your light/dark theme setup
@@ -21,7 +22,9 @@ void main() async {
   } catch (e) {
     print("Error initializing Firebase: $e");
   }
-Get.put(DataController());
+  Get.put(DataController());
+
+  Get.put(FavoriteController()); // Initialize the controller
   runApp(const MyApp());
 }
 
@@ -35,7 +38,8 @@ class MyApp extends StatelessWidget {
       title: 'ComfyStay',
       theme: lightTheme, // Light theme configuration
       darkTheme: darkTheme, // Dark theme configuration
-      themeMode: ThemeMode.light, // Automatically switch based on the system theme
+      themeMode:
+          ThemeMode.light, // Automatically switch based on the system theme
       initialRoute: '/', // Set the initial route
       getPages: AppRoutes.routes, // Route definitions
       // home: PropertyList(),

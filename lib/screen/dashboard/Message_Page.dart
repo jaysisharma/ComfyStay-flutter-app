@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MessagePage extends StatefulWidget {
-  const MessagePage({super.key});
+  final String userId; // Accept userId as a parameter
+
+  const MessagePage({Key? key, required this.userId}) : super(key: key);
 
   @override
   _MessagePageState createState() => _MessagePageState();
@@ -10,7 +12,7 @@ class MessagePage extends StatefulWidget {
 
 class _MessagePageState extends State<MessagePage> {
   final TextEditingController _controller = TextEditingController();
-  
+
   // This list will hold all messages with their sender status
   final List<Map<String, dynamic>> _messages = [
     {'text': 'Hello from sender', 'isSender': true},
@@ -40,12 +42,26 @@ class _MessagePageState extends State<MessagePage> {
               backgroundImage: AssetImage("assets/images/roomcard.jpeg"),
             ),
             SizedBox(width: 20),
-            Text('Message Page', style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal),),
+            Text(
+              'Message Page',
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
+            ),
           ],
         ),
         actions: [
-          IconButton(icon: Icon(Icons.call, color: Colors.white,), onPressed: () {}),
-          IconButton(icon: Icon(Icons.videocam, color: Colors.white,), onPressed: () {}),
+          IconButton(
+              icon: Icon(
+                Icons.call,
+                color: Colors.white,
+              ),
+              onPressed: () {}),
+          IconButton(
+              icon: Icon(
+                Icons.videocam,
+                color: Colors.white,
+              ),
+              onPressed: () {}),
         ],
       ),
       body: Column(
@@ -72,9 +88,10 @@ class _MessagePageState extends State<MessagePage> {
     return Padding(
       padding: EdgeInsets.all(10.0),
       child: Row(
-        mainAxisAlignment: isSender ? MainAxisAlignment.end : MainAxisAlignment.start,
+        mainAxisAlignment:
+            isSender ? MainAxisAlignment.end : MainAxisAlignment.start,
         children: [
-          if (!isSender) 
+          if (!isSender)
             CircleAvatar(
               radius: 20,
               backgroundImage: AssetImage("assets/images/room.png"),
@@ -98,9 +115,8 @@ class _MessagePageState extends State<MessagePage> {
               style: TextStyle(fontSize: 15),
             ),
           ),
-          if (isSender) 
-            SizedBox(width: 10),
-          if (isSender) 
+          if (isSender) SizedBox(width: 10),
+          if (isSender)
             CircleAvatar(
               radius: 20,
               backgroundImage: AssetImage("assets/images/room.png"),

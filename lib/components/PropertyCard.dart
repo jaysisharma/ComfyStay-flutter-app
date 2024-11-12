@@ -5,9 +5,9 @@ import 'package:get/get.dart';
 import '../screen/dashboard/PropertyDetail.dart'; // Make sure to import GetX for navigation
 
 class PropertyCard extends StatelessWidget {
-  final Resource resource; // Holds the resource data
+  final Property property; // Holds the property data
 
-  const PropertyCard({super.key, required this.resource}); // Constructor
+  const PropertyCard({super.key, required this.property}); // Constructor
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class PropertyCard extends StatelessWidget {
     return GestureDetector( // Wrap the entire card with GestureDetector
       onTap: () {
         // Navigate to PropertyDetailScreen
-        Get.to(() => PropertyDetailScreen(resource: resource)); // Pass the resource to PropertyDetailScreen
+        Get.to(() => PropertyDetailScreen(property: property)); // Pass the resource to PropertyDetailScreen
       },
       child: Container(
         child: Column(
@@ -30,8 +30,8 @@ class PropertyCard extends StatelessWidget {
               height: 250, // Set container height
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: resource.photos != null && resource.photos!.isNotEmpty
-                      ? NetworkImage(resource.photos![0]) // First photo URL
+                  image: property.photos != null && property.photos!.isNotEmpty
+                      ? NetworkImage(property.photos![0]) // First photo URL
                       : const AssetImage("assets/images/roomcard.jpeg") as ImageProvider, // Fallback image
                   fit: BoxFit.cover, // Cover entire container
                 ),
@@ -51,7 +51,7 @@ class PropertyCard extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(left: 8.0),
                         child: Text(
-                          resource.name, // Display resource name
+                          property.propertyName, // Display property name
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -68,7 +68,7 @@ class PropertyCard extends StatelessWidget {
                         ),
                         alignment: Alignment.center,
                         child: Text(
-                          resource.propertyType, // Display property type dynamically
+                          property.propertyType, // Display property type dynamically
                           style: const TextStyle(color: Colors.white),
                         ),
                       ),
@@ -84,7 +84,7 @@ class PropertyCard extends StatelessWidget {
                           Icon(Icons.location_pin, color: subtitleColor),
                           const SizedBox(width: 4),
                           Text(
-                            "${resource.address.street}, ${resource.address.city}", // Dynamic location from resource
+                            "${property.location}", // Dynamic location from property
                             style: TextStyle(
                               color: titleColor, // Dynamic location text color
                             ),
@@ -110,7 +110,7 @@ class PropertyCard extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      "Rs ${resource.pricePerMonth}/month", // Dynamic price from resource
+                      "Rs ${property.propertyPrice}/month", // Dynamic price from property
                       style: TextStyle(
                         color: priceColor, // Dynamic price text color
                       ),

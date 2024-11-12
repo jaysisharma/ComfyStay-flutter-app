@@ -90,6 +90,7 @@ class PropertyType extends StatelessWidget {
   }
 }
 
+
 class ListingPage extends StatelessWidget {
   const ListingPage({super.key});
 
@@ -101,10 +102,14 @@ class ListingPage extends StatelessWidget {
     final TextEditingController nameController = TextEditingController();
     final TextEditingController descriptionController = TextEditingController();
     final TextEditingController priceController = TextEditingController();
+    final TextEditingController locationController = TextEditingController(); // New location controller
 
     // Validation function
     void validateAndNavigate() {
-      if (nameController.text.isEmpty || descriptionController.text.isEmpty || priceController.text.isEmpty) {
+      if (nameController.text.isEmpty || 
+          descriptionController.text.isEmpty || 
+          priceController.text.isEmpty || 
+          locationController.text.isEmpty) { // Check if location is also empty
         // Show error message if any text field is empty
         Get.snackbar('Error', 'Please fill in all fields.');
       } else {
@@ -115,6 +120,7 @@ class ListingPage extends StatelessWidget {
           descriptionController.text,
           priceController.text,
         );
+        dataController.setListingLocation(locationController.text); // Store location
 
         // Navigate to the next screen
         Get.toNamed("/conditions");
@@ -132,30 +138,36 @@ class ListingPage extends StatelessWidget {
         ),
         title: Text("$propertyType Listing"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            ListingTextField(
-              text: "$propertyType Name",
-              controller: nameController, // Pass controller here
-            ),
-            ListingTextField(
-              text: "$propertyType Description",
-              controller: descriptionController, // Pass controller here
-            ),
-            ListingTextField(
-              text: "$propertyType Price/Month",
-              controller: priceController, // Pass controller here
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18.0),
-              child: GestureDetector(
-                onTap: validateAndNavigate, // Call the validation function on tap
-                child: CustomButton(text: "Next"),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              ListingTextField(
+                text: "$propertyType Name",
+                controller: nameController, // Pass controller here
               ),
-            ),
-          ],
+              ListingTextField(
+                text: "$propertyType Description",
+                controller: descriptionController, // Pass controller here
+              ),
+              ListingTextField(
+                text: "$propertyType Price/Month",
+                controller: priceController, // Pass controller here
+              ),
+              ListingTextField(
+                text: "$propertyType Location",
+                controller: locationController, // New location text field
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                child: GestureDetector(
+                  onTap: validateAndNavigate, // Call the validation function on tap
+                  child: CustomButton(text: "Next"),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
