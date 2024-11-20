@@ -25,6 +25,7 @@ void main() async {
   Get.put(DataController());
 
   Get.put(FavoriteController()); // Initialize the controller
+  
   runApp(const MyApp());
 }
 

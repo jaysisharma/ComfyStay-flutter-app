@@ -1,8 +1,7 @@
-import 'package:comfystay/models/resource.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../screen/dashboard/PropertyDetail.dart'; // Make sure to import GetX for navigation
+import 'package:comfystay/models/resource.dart';
 
 class PropertyCard extends StatelessWidget {
   final Property property; // Holds the property data
@@ -61,15 +60,18 @@ class PropertyCard extends StatelessWidget {
                       ),
                       Container(
                         height: 40,
-                        width: 40,
+                        // width: 40,
                         decoration: BoxDecoration(
                           color: const Color.fromRGBO(20, 133, 115, 1),
                           borderRadius: BorderRadius.circular(9),
                         ),
                         alignment: Alignment.center,
-                        child: Text(
-                          property.propertyType, // Display property type dynamically
-                          style: const TextStyle(color: Colors.white),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            property.propertyType, // Display property type dynamically
+                            style: const TextStyle(color: Colors.white),
+                          ),
                         ),
                       ),
                     ],
@@ -108,11 +110,13 @@ class PropertyCard extends StatelessWidget {
                   ),
                   // Property Price
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
                     child: Text(
-                      "Rs ${property.propertyPrice}/month", // Dynamic price from property
+                      "\Rs${property.propertyPrice}", // Dynamic price
                       style: TextStyle(
-                        color: priceColor, // Dynamic price text color
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: priceColor, // Dynamic price color
                       ),
                     ),
                   ),

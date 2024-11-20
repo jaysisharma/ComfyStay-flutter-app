@@ -1,6 +1,8 @@
 import 'dart:io'; // Import this for File
+import 'package:comfystay/screen/profile/HelpSupport.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -218,43 +220,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: _buildProfileMenu(
                 "Change Password", CustomIcons.changePassword),
           ),
-          _buildProfileMenu("Help & Support", CustomIcons.helpSupport),
+          GestureDetector(
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context)=> HelpAndSupport()));
+            },
+            child: _buildProfileMenu("Help & Support", CustomIcons.helpSupport)),
 
           // Dark mode switch
+          
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Icon(CustomIcons.darkMode,
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white
-                            : Colors.black), // Dark mode icon
-                    const SizedBox(width: 20),
-                    Text("Dark Mode",
-                        style: TextStyle(
-                            fontSize: 20,
-                            color:
-                                Theme.of(context).brightness == Brightness.dark
-                                    ? Colors.white
-                                    : Colors.black)),
-                  ],
-                ),
-                Switch(
-                  value: Theme.of(context).brightness == Brightness.dark,
-                  onChanged: (bool value) {
-                    Get.changeThemeMode(
-                        value ? ThemeMode.dark : ThemeMode.light);
-                  },
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 0),
-            child: Divider(height: 8, color: Colors.grey[400]),
+            // child: Divider(height: 8, color: Colors.grey[400]),
           ),
 
           GestureDetector(

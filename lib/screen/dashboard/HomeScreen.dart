@@ -39,9 +39,9 @@ class HomeScreen extends StatelessWidget {
       body: Obx(() {
         return IndexedStack(
           index: bottomNavController.currentIndex.value,
-          children: const [
+          children:  [
             Dashboard(),
-            Inbox(),
+            Favscreen(),
             Inbox(),
             ProfileScreen(),
           ],

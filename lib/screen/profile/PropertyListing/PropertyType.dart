@@ -14,7 +14,8 @@ class PropertyType extends StatelessWidget {
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
         backgroundColor: Colors.grey[200],
-        title: Text('Choose Property Type', style: TextStyle(color: Colors.black)),
+        title:
+            Text('Choose Property Type', style: TextStyle(color: Colors.black)),
         iconTheme: IconThemeData(color: Colors.black),
         elevation: 0, // Remove default AppBar shadow
       ),
@@ -85,44 +86,45 @@ class PropertyType extends StatelessWidget {
 
   void _setPropertyTypeAndNavigate(String type) {
     final DataController dataController = Get.find();
-    dataController.setPropertyType(type); // Save the selected property type in the controller
+    dataController.setPropertyType(
+        type); // Save the selected property type in the controller
     Get.toNamed("/listing", arguments: type); // Pass the type as an argument
   }
 }
-
 
 class ListingPage extends StatelessWidget {
   const ListingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final String propertyType = Get.arguments ?? "PG"; // Get the property type passed from PropertyType screen
+    final String propertyType = Get.arguments ??
+        "PG"; // Get the property type passed from PropertyType screen
 
     // Controllers to capture the input text
     final TextEditingController nameController = TextEditingController();
     final TextEditingController descriptionController = TextEditingController();
     final TextEditingController priceController = TextEditingController();
-    final TextEditingController locationController = TextEditingController(); // New location controller
+    final TextEditingController locationController =
+        TextEditingController(); // New location controller
 
     // Validation function
     void validateAndNavigate() {
-      if (nameController.text.isEmpty || 
-          descriptionController.text.isEmpty || 
-          priceController.text.isEmpty || 
-          locationController.text.isEmpty) { // Check if location is also empty
-        // Show error message if any text field is empty
+      if (nameController.text.isEmpty ||
+          descriptionController.text.isEmpty ||
+          priceController.text.isEmpty ||
+          locationController.text.isEmpty) {
         Get.snackbar('Error', 'Please fill in all fields.');
+      } else if (int.tryParse(priceController.text) == null) {
+        Get.snackbar('Error', 'Price must be a valid number.');
       } else {
-        // Store the data in the controller
         final DataController dataController = Get.find();
         dataController.setListingData(
           nameController.text,
           descriptionController.text,
           priceController.text,
         );
-        dataController.setListingLocation(locationController.text); // Store location
+        dataController.setListingLocation(locationController.text);
 
-        // Navigate to the next screen
         Get.toNamed("/conditions");
       }
     }
@@ -162,7 +164,8 @@ class ListingPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 18.0),
                 child: GestureDetector(
-                  onTap: validateAndNavigate, // Call the validation function on tap
+                  onTap:
+                      validateAndNavigate, // Call the validation function on tap
                   child: CustomButton(text: "Next"),
                 ),
               ),

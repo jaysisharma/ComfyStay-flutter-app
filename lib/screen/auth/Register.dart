@@ -1,5 +1,6 @@
 // ignore_for_file: file_names, library_private_types_in_public_api
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -40,24 +41,44 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() => _isLoading = true);
 
     try {
-      await _auth.createUserWithEmailAndPassword(
+      // Register the user with Firebase Authentication
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
+      User? user = userCredential.user;
 
-      // Store the user state in Shared Preferences
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('isLoggedIn', true);
+      if (user != null) {
+        String userId = user.uid;
 
-      // After successful registration
-      Get.snackbar("Success", "Account created successfully!",
-          backgroundColor: Colors.green, colorText: Colors.white);
+        // Store user data in Firestore
+        await FirebaseFirestore.instance.collection('users').doc(userId).set({
+          'id': userId,
+          'name': _fullNameController.text.trim(),
+          'email': _emailController.text.trim(),
+          'createdAt': FieldValue.serverTimestamp(),
+        });
 
-      Get.toNamed('/home'); // Navigate to the home page
+        // Store login state in SharedPreferences
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isLoggedIn', true);
+
+        // Show success message
+        Get.snackbar(
+          "Success",
+          "Account created successfully!",
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+
+        // Navigate to the home page
+        Get.toNamed('/home');
+      }
     } on FirebaseAuthException catch (e) {
       setState(() => _isLoading = false);
 
-      // Handle errors from Firebase
+      // Handle Firebase errors
       String errorMessage;
       switch (e.code) {
         case 'email-already-in-use':
@@ -73,8 +94,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
           errorMessage = 'An unknown error occurred.';
       }
 
-      Get.snackbar("Registration Failed", errorMessage,
-          backgroundColor: Colors.red, colorText: Colors.white);
+      Get.snackbar(
+        "Registration Failed",
+        errorMessage,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     } finally {
       setState(() => _isLoading = false);
     }

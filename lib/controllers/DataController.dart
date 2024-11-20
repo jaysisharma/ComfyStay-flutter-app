@@ -9,7 +9,7 @@ class DataController extends GetxController {
   var selectedPropertyType = ''.obs;
   var listingName = ''.obs;
   var listingDescription = ''.obs;
-  var listingPrice = ''.obs;
+  var listingPrice = 0.obs;
   var listingLocation = ''.obs;
 
   // Media and conditions
@@ -25,12 +25,14 @@ class DataController extends GetxController {
   void setListingData(String name, String description, String price) {
     listingName.value = name;
     listingDescription.value = description;
-    listingPrice.value = price;
+    listingPrice.value = int.tryParse(price) ?? 0;
   }
+
   void setListingLocation(String location) => listingLocation.value = location;
   void setContactNumber(String contact) => contactNumber.value = contact;
   void addCondition(String condition) => selectedConditions.add(condition);
-  void addInitialRequirement(String requirement) => selectedInitialRequirements.add(requirement);
+  void addInitialRequirement(String requirement) =>
+      selectedInitialRequirements.add(requirement);
   void addWhatsIncluded(String included) => selectedWhatsIncluded.add(included);
   void addPhotos(List<File> photos) => selectedPhotos.addAll(photos);
 
@@ -38,7 +40,8 @@ class DataController extends GetxController {
   Future<String?> uploadImageToCloudinary(File imageFile) async {
     final cloudName = 'drgriybgm';
     final uploadPreset = 'listing';
-    final url = Uri.parse('https://api.cloudinary.com/v1_1/$cloudName/image/upload');
+    final url =
+        Uri.parse('https://api.cloudinary.com/v1_1/$cloudName/image/upload');
 
     final request = http.MultipartRequest('POST', url)
       ..fields['upload_preset'] = uploadPreset
@@ -84,7 +87,7 @@ class DataController extends GetxController {
     selectedPropertyType.value = '';
     listingName.value = '';
     listingDescription.value = '';
-    listingPrice.value = '';
+    listingPrice.value = 0;
     listingLocation.value = '';
     selectedConditions.clear();
     selectedInitialRequirements.clear();

@@ -1,50 +1,105 @@
-// import 'package:comfystay/components/PropertyCard.dart';
-// import 'package:flutter/material.dart';
-// import '../../models/resource.dart';
-// import '../../services/resource_service.dart';
-// // Assuming PropertyCard is in the same directory
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:comfystay/components/PropertyCard.dart';
+import 'package:comfystay/models/resource.dart';
 
-// class PropertyList extends StatefulWidget {
-//   @override
-//   _PropertyListState createState() => _PropertyListState();
-// }
+class SearchScreen extends StatefulWidget {
+  const SearchScreen({super.key});
 
-// class _PropertyListState extends State<PropertyList> {
-//   late Future<List<Resource>> futureResources;
+  @override
+  _SearchScreenState createState() => _SearchScreenState();
+}
 
-//   @override
-//   void initState() {
-//     super.initState();
-//     futureResources = ResourceService().fetchResources();
-//   }
+class _SearchScreenState extends State<SearchScreen> {
+  final arguments = Get.arguments ?? {};
+  late final String area;
+  late final String budget;
+  late final String propertyType;
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Property Listings'),
-//       ),
-//       body: FutureBuilder<List<Resource>>(
-//         future: futureResources,
-//         builder: (context, snapshot) {
-//           if (snapshot.connectionState == ConnectionState.waiting) {
-//             return Center(child: CircularProgressIndicator());
-//           } else if (snapshot.hasError) {
-//             return Center(child: Text('Error: ${snapshot.error}'));
-//           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-//             return Center(child: Text('No properties found.'));
-//           } else {
-//             List<Resource> resources = snapshot.data!;
-//             return ListView.builder(
-//               itemCount: resources.length,
-//               itemBuilder: (context, index) {
-//                 final resource = resources[index];
-//                 return PropertyCard(resource: resource); // Pass the resource
-//               },
-//             );
-//           }
-//         },
-//       ),
-//     );
-//   }
-// }
+  List<Property> searchResults = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Retrieve search parameters
+    area = arguments['area'] ?? '';
+    budget = arguments['budget'] ?? '';
+    propertyType = arguments['propertyType'] ?? '';
+
+    // Fetch properties based on the search criteria
+    fetchProperties();
+  }
+
+  Future<void> fetchProperties() async {
+    try {
+      print('Querying Firestore with: Area - $area, Budget - $budget, PropertyType - $propertyType');
+
+      // If budget is provided, attempt to parse it to a double
+      double parsedBudget = double.tryParse(budget) ?? double.infinity;
+
+      // Construct the Firestore query based on available parameters
+      Query query = FirebaseFirestore.instance.collection('property_details');
+
+      if (area.isNotEmpty) {
+        query = query.where('location', isEqualTo: area);
+      }
+
+      if (propertyType.isNotEmpty) {
+        query = query.where('type', isEqualTo: propertyType);
+      }
+
+      if (parsedBudget != double.infinity) {
+        query = query.where('property_price', isLessThanOrEqualTo: parsedBudget);
+      }
+
+      // Execute the query and get the results
+      QuerySnapshot snapshot = await query.get();
+      
+      print('Documents found: ${snapshot.docs.length}');
+
+      setState(() {
+        searchResults = snapshot.docs.map((doc) {
+          print('Property data: ${doc.data()}');
+          return Property.fromJson(doc.data() as Map<String, dynamic>);
+        }).toList();
+        isLoading = false;
+      });
+    } catch (error) {
+      print('Error fetching properties: $error');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Search Results'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : searchResults.isEmpty
+                ? const Center(
+                    child: Text(
+                      'No properties found.',
+                      style: TextStyle(color: Colors.grey, fontSize: 16),
+                    ),
+                  )
+                : ListView.builder(
+                    itemCount: searchResults.length,
+                    itemBuilder: (context, index) {
+                      final property = searchResults[index];
+                      return PropertyCard(property: property);
+                    },
+                  ),
+      ),
+    );
+  }
+}

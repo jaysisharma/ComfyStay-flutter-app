@@ -1,10 +1,20 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class MessagePage extends StatefulWidget {
-  final String userId; // Accept userId as a parameter
+  final String userId;
+  final String receiverId;
+  final String imageUrl;
+  final String propertyName;
 
-  const MessagePage({Key? key, required this.userId}) : super(key: key);
+  const MessagePage({
+    Key? key,
+    required this.userId,
+    required this.receiverId,
+    required this.imageUrl,
+    required this.propertyName,
+  }) : super(key: key);
 
   @override
   _MessagePageState createState() => _MessagePageState();
@@ -12,144 +22,256 @@ class MessagePage extends StatefulWidget {
 
 class _MessagePageState extends State<MessagePage> {
   final TextEditingController _controller = TextEditingController();
+  String userName = '';
+  String profileImage = 'assets/images/profile.png'; // Default profile image
 
-  // This list will hold all messages with their sender status
-  final List<Map<String, dynamic>> _messages = [
-    {'text': 'Hello from sender', 'isSender': true},
-    {'text': 'Hello from receiver', 'isSender': false},
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _getUserProfile(widget.receiverId);
+  }
 
-  void _sendMessage() {
-    if (_controller.text.isNotEmpty) {
-      setState(() {
-        // Add a new message with the sender status
-        _messages.add({'text': _controller.text, 'isSender': true});
-        _controller.clear(); // Clear the text field
+  String _getChatDocumentPath() {
+    List<String> ids = [widget.userId, widget.receiverId];
+    ids.sort(); // Ensure consistent document path
+    return ids.join('-');
+  }
+
+  Future<void> _sendMessage() async {
+    if (_controller.text.trim().isEmpty) return;
+
+    try {
+      final timestamp = FieldValue.serverTimestamp();
+      final messageText = _controller.text.trim();
+
+      // Add message to Firestore
+      await FirebaseFirestore.instance
+          .collection('messages')
+          .doc(_getChatDocumentPath())
+          .collection('chatMessages')
+          .add({
+        'senderId': widget.userId,
+        'receiverId': widget.receiverId,
+        'message': messageText,
+        'timestamp': timestamp,
+        'status': 'sent',
       });
+
+      // Update inbox for both users
+      await _updateInbox(
+          widget.userId, widget.receiverId, messageText, timestamp);
+      await _updateInbox(
+          widget.receiverId, widget.userId, messageText, timestamp);
+
+      _controller.clear();
+    } catch (e) {
+      print('Error sending message: $e');
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color.fromARGB(255, 234, 234, 234),
-      appBar: AppBar(
-        foregroundColor: Colors.white,
-        title: Row(
-          children: [
-            CircleAvatar(
-              radius: 20,
-              backgroundImage: AssetImage("assets/images/roomcard.jpeg"),
-            ),
-            SizedBox(width: 20),
-            Text(
-              'Message Page',
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
-            ),
-          ],
-        ),
-        actions: [
-          IconButton(
-              icon: Icon(
-                Icons.call,
-                color: Colors.white,
-              ),
-              onPressed: () {}),
-          IconButton(
-              icon: Icon(
-                Icons.videocam,
-                color: Colors.white,
-              ),
-              onPressed: () {}),
-        ],
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: _messages.length,
-              itemBuilder: (context, index) {
-                final messageData = _messages[index];
-                return _messageBubble(
-                  isSender: messageData['isSender'],
-                  message: messageData['text'],
-                );
-              },
-            ),
-          ),
-          _buildInputArea(),
-        ],
-      ),
-    );
+  Future<void> _getUserProfile(String userId) async {
+    try {
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+
+      if (userDoc.exists) {
+        final data = userDoc.data() as Map<String, dynamic>;
+        setState(() {
+          userName = data['name'] ?? 'Unknown';
+          profileImage = data['profileImage'] != null &&
+                  Uri.parse(data['profileImage']).isAbsolute
+              ? data['profileImage']
+              : 'assets/images/profile.png';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        userName = 'Unknown';
+        profileImage = 'assets/images/profile.png';
+      });
+      print('Error fetching user profile: $e');
+    }
   }
 
-  Widget _messageBubble({required bool isSender, required String message}) {
-    return Padding(
-      padding: EdgeInsets.all(10.0),
-      child: Row(
-        mainAxisAlignment:
-            isSender ? MainAxisAlignment.end : MainAxisAlignment.start,
-        children: [
-          if (!isSender)
-            CircleAvatar(
-              radius: 20,
-              backgroundImage: AssetImage("assets/images/room.png"),
-            ),
-          SizedBox(width: 10),
-          Container(
-            decoration: BoxDecoration(
-              color: isSender ? Colors.blue[100] : Colors.white,
-              borderRadius: BorderRadius.circular(10.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  blurRadius: 8,
-                  spreadRadius: 2,
-                ),
-              ],
-            ),
-            padding: EdgeInsets.all(12.0),
-            child: Text(
-              message,
-              style: TextStyle(fontSize: 15),
-            ),
+  Future<void> _updateInbox(
+      String userId, String otherUserId, String message, var timestamp) async {
+    try {
+      var inboxRef = FirebaseFirestore.instance.collection('inbox');
+
+      // Fetch inbox documents where the current user is a part of the conversation
+      var inboxDoc =
+          await inboxRef.where('userIds', arrayContains: userId).get();
+
+      // Try to find a matching document where both users are part of the conversation
+      QueryDocumentSnapshot<Map<String, dynamic>>? matchingDoc =
+          inboxDoc.docs.firstWhereOrNull(
+        (doc) => List<String>.from(doc['userIds']).contains(otherUserId),
+      );
+
+      if (matchingDoc == null) {
+        // If no matching document, create a new thread
+        await inboxRef.add({
+          'userIds': [userId, otherUserId],
+          'lastMessage': message,
+          'lastMessageTimestamp': timestamp,
+          'unreadCount': userId == widget.receiverId
+              ? 1
+              : 0, // Increment unread count for receiver
+        });
+      } else {
+        // If a matching document is found, update it with the latest message
+        await inboxRef.doc(matchingDoc.id).update({
+          'lastMessage': message,
+          'lastMessageTimestamp': timestamp,
+          'unreadCount': userId == widget.receiverId
+              ? FieldValue.increment(1)
+              : 0, // Reset unread count for sender
+        });
+      }
+    } catch (e) {
+      print('Error updating inbox: $e');
+    }
+  }
+
+  Stream<List<Map<String, dynamic>>> _getMessages() {
+    return FirebaseFirestore.instance
+        .collection('messages')
+        .doc(_getChatDocumentPath())
+        .collection('chatMessages')
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) {
+              final data = doc.data();
+              return {
+                'senderId': data['senderId'],
+                'receiverId': data['receiverId'],
+                'message': data['message'],
+                'timestamp': data['timestamp'] ?? Timestamp.now(),
+                'status': data['status'],
+              };
+            }).toList());
+  }
+
+  Widget _buildMessageBubble({
+    required bool isSender,
+    required String message,
+    required Timestamp timestamp,
+    required String status,
+  }) {
+    final time =
+        timestamp.toDate().toLocal().toString().split(' ')[1].substring(0, 5);
+    return Row(
+      mainAxisAlignment:
+          isSender ? MainAxisAlignment.end : MainAxisAlignment.start,
+      children: [
+        if (!isSender)
+          CircleAvatar(
+            radius: 20,
+            backgroundImage: NetworkImage(widget.imageUrl),
           ),
-          if (isSender) SizedBox(width: 10),
-          if (isSender)
-            CircleAvatar(
-              radius: 20,
-              backgroundImage: AssetImage("assets/images/room.png"),
-            ),
-        ],
-      ),
+        Container(
+          padding: const EdgeInsets.all(10),
+          margin: const EdgeInsets.all(5),
+          decoration: BoxDecoration(
+            color: isSender ? Colors.blue[100] : Colors.grey[300],
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(message),
+              const SizedBox(height: 5),
+              Text(
+                time,
+                style: const TextStyle(fontSize: 10, color: Colors.grey),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
   Widget _buildInputArea() {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
       child: Row(
         children: [
+          IconButton(
+            icon: const Icon(Icons.attach_file),
+            onPressed: () {
+              // Handle file attachment
+            },
+          ),
           Expanded(
             child: TextField(
               controller: _controller,
-              decoration: InputDecoration(
-                prefixIcon: Icon(Icons.keyboard),
-                hintText: "Type a message",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                  borderSide: BorderSide.none,
-                ),
-                filled: true,
-                fillColor: Colors.white,
+              decoration: const InputDecoration(
+                hintText: 'Type your message...',
               ),
             ),
           ),
           IconButton(
-            icon: Icon(Icons.send),
+            icon: const Icon(Icons.send),
             onPressed: _sendMessage,
           ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Row(
+          children: [
+            CircleAvatar(
+              radius: 20,
+              backgroundImage: NetworkImage(widget.imageUrl),
+            ),
+            const SizedBox(width: 10),
+            Text(
+              widget.propertyName,
+              style: const TextStyle(color: Colors.white),
+            ),
+          ],
+        ),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: StreamBuilder<List<Map<String, dynamic>>>(
+              stream: _getMessages(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return const Center(child: Text('Error fetching messages'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text('No messages'));
+                } else {
+                  final messages = snapshot.data!;
+                  return ListView.builder(
+                    reverse: true,
+                    itemCount: messages.length,
+                    itemBuilder: (context, index) {
+                      final message = messages[index];
+                      return _buildMessageBubble(
+                        isSender: message['senderId'] == widget.userId,
+                        message: message['message'],
+                        timestamp: message['timestamp'],
+                        status: message['status'],
+                      );
+                    },
+                  );
+                }
+              },
+            ),
+          ),
+          _buildInputArea(),
         ],
       ),
     );

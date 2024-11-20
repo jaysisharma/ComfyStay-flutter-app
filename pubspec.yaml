@@ -50,6 +50,8 @@ dependencies:
   firebase_app_check: ^0.3.1
   carousel_slider: ^5.0.0
   share: ^2.0.4
+  cached_network_image: ^3.4.0
+  uuid: ^4.5.1
 
 dev_dependencies:
   flutter_test:

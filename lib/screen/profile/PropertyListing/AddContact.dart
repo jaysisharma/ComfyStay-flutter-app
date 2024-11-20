@@ -30,6 +30,10 @@ class _AddContactState extends State<AddContact> {
       if (currentUser != null) {
         String userId = currentUser.uid; // The current user ID
 
+        // Generate a unique property ID
+        String propertyId = FirebaseFirestore.instance.collection('property_details').doc().id;
+
+        // Upload images to Cloudinary if needed
         for (var photo in dataController.selectedPhotos) {
           final imageUrl = await dataController.uploadImageToCloudinary(photo);
           if (imageUrl != null) {
@@ -37,7 +41,9 @@ class _AddContactState extends State<AddContact> {
           }
         }
 
-        await FirebaseFirestore.instance.collection('property_details').add({
+        // Add property details to Firestore
+        await FirebaseFirestore.instance.collection('property_details').doc(propertyId).set({
+          'property_id': propertyId, // Add the propertyId to the document
           'user_id': userId,
           'property_name': dataController.listingName.value,
           'property_description': dataController.listingDescription.value,
@@ -48,8 +54,7 @@ class _AddContactState extends State<AddContact> {
           'initialRequirements': dataController.selectedInitialRequirements,
           'contact': dataController.contactNumber.value,
           'location': dataController.listingLocation.value,
-          'photos': dataController
-              .cloudinaryImageUrls, // Store Cloudinary URLs in Firestore
+          'photos': dataController.cloudinaryImageUrls, // Store Cloudinary URLs in Firestore
         });
 
         // Show a success message

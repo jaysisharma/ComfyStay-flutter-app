@@ -1,6 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:comfystay/components/CustomButton.dart';
 import 'package:comfystay/controllers/favorite_controller.dart';
+import 'package:comfystay/screen/dashboard/Message_Page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:share/share.dart';
@@ -9,10 +11,9 @@ import '../../models/resource.dart';
 
 class PropertyDetailScreen extends StatelessWidget {
   final Property property;
-    final FavoriteController favoriteController = Get.put(FavoriteController());
+  final FavoriteController favoriteController = Get.put(FavoriteController());
 
-
-   PropertyDetailScreen({Key? key, required this.property}) : super(key: key);
+  PropertyDetailScreen({Key? key, required this.property}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,9 @@ class PropertyDetailScreen extends StatelessWidget {
             children: [
               Stack(
                 children: [
-                  SizedBox(height: 40,),
+                  // SizedBox(
+                  //   height: 40,
+                  // ),
                   Container(
                     width: double.infinity,
                     height: 250,
@@ -34,7 +37,7 @@ class PropertyDetailScreen extends StatelessWidget {
                             options: CarouselOptions(
                               autoPlay: true,
                               enlargeCenterPage: true,
-                              aspectRatio: 1,
+                              // aspectRatio: 1,
                               viewportFraction: 1.0,
                             ),
                             items: property.photos.map((photo) {
@@ -72,24 +75,25 @@ class PropertyDetailScreen extends StatelessWidget {
                           ),
                         ),
                          Obx(() => IconButton(
-                          iconSize: 40,
-                          onPressed: () {
-                            favoriteController.toggleFavorite(property);
-                          },
-                          icon: Icon(
-                            favoriteController.isFavorite(property)
-                                ? Icons.favorite
-                                : Icons.favorite_border_outlined,
-                            color: Colors.green,
-                          ),
-                        )),
+                              iconSize: 40,
+                              onPressed: () {
+                                favoriteController.toggleFavorite(property);
+                              },
+                              icon: Icon(
+                                favoriteController.isFavorite(property)
+                                    ? Icons.favorite
+                                    : Icons.favorite_border_outlined,
+                                color: Colors.red,
+                              ),
+                            )),
                       ],
                     ),
                   ),
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 18),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18.0, vertical: 18),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -98,7 +102,8 @@ class PropertyDetailScreen extends StatelessWidget {
                       children: [
                         Text(
                           "Rs ${property.propertyPrice}/month",
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                         IconButton(
                           icon: Icon(Icons.share),
@@ -117,7 +122,8 @@ class PropertyDetailScreen extends StatelessWidget {
                     const SizedBox(height: 15),
                     Text(
                       property.propertyName,
-                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 15),
                     Text(
@@ -127,12 +133,14 @@ class PropertyDetailScreen extends StatelessWidget {
                     const SizedBox(height: 15),
                     Text(
                       "${property.location}",
-                      style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w500, fontSize: 16),
                     ),
                     const SizedBox(height: 20),
                     const Text(
                       "Amenities",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                     ),
                   ],
                 ),
@@ -148,8 +156,36 @@ class PropertyDetailScreen extends StatelessWidget {
               _buildContact(property.contact),
               const SizedBox(height: 20),
               GestureDetector(
-                onTap: () {
-                  Get.toNamed('/messagepage');
+                onTap: () async {
+                  User? user = FirebaseAuth.instance.currentUser;
+
+                  // Check if the user is logged in
+                  if (user == null) {
+                    // If not logged in, show an error message
+                    Get.snackbar(
+                        "Error", "You must be logged in to contact the owner.");
+                    return;
+                  }
+
+                  String currentUserId = user.uid;
+                  print("Current User ID: $currentUserId");
+
+                  // Check if the current user is trying to message themselves
+                  if (currentUserId == property.user_id) {
+                    // Show an error message if the user is the property owner
+                    Get.snackbar("Error", "You cannot message yourself.",
+                        backgroundColor: Colors.orange);
+                    return;
+                  }
+
+                  // Navigate to the message page if the user is not the property owner
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          MessagePage(userId: property.user_id, receiverId: currentUserId, imageUrl: property.photos[0], propertyName: property.propertyName,),
+                    ),
+                  );
                 },
                 child: CustomButton(text: 'Contact Now'),
               ),

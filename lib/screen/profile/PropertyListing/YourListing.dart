@@ -17,7 +17,10 @@ class UserListingsPage extends StatelessWidget {
         ),
         backgroundColor: Colors.teal,
       ),
-      body: UserListings(),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: UserListings(),
+      ),
     );
   }
 }
@@ -38,13 +41,10 @@ class _UserListingsState extends State<UserListings> {
     super.initState();
     final currentUser = _auth.currentUser;
 
-    // Check if the user is authenticated
     if (currentUser != null) {
-      // Fetch listings where the user_id matches the current user's UID
       _userListingsStream = _firestore
           .collection('property_details')
-          .where('user_id',
-              isEqualTo: currentUser.uid) // Filter based on user_id
+          .where('user_id', isEqualTo: currentUser.uid)
           .snapshots();
     }
   }
@@ -53,14 +53,12 @@ class _UserListingsState extends State<UserListings> {
   Widget build(BuildContext context) {
     final currentUser = _auth.currentUser;
 
-    // If the user is not authenticated, show a message
     if (currentUser == null) {
       return Center(child: Text("User not authenticated"));
     }
 
     return StreamBuilder<QuerySnapshot>(
-      stream:
-          _userListingsStream, // Use the filtered stream for the current user's listings
+      stream: _userListingsStream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
@@ -77,11 +75,7 @@ class _UserListingsState extends State<UserListings> {
         return ListView.builder(
           itemCount: snapshot.data!.docs.length,
           itemBuilder: (context, index) {
-            // Get the document data
-            var propertyData =
-                snapshot.data!.docs[index].data() as Map<String, dynamic>;
-
-            // Use the fromJson factory constructor to create the Property object
+            var propertyData = snapshot.data!.docs[index].data() as Map<String, dynamic>;
             Property property = Property.fromJson(propertyData);
 
             return PropertyCard3(
@@ -90,7 +84,7 @@ class _UserListingsState extends State<UserListings> {
               price: property.propertyPrice,
               photos: property.photos,
               propertyType: property.propertyType,
-              property: property, // Pass the entire Property object
+              property: property,
             );
           },
         );
@@ -98,6 +92,7 @@ class _UserListingsState extends State<UserListings> {
     );
   }
 }
+
 
 class PropertyDetailPage extends StatelessWidget {
   final String propertyName;
